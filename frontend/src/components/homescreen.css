@@ -1,0 +1,38 @@
+.prayer-card {
+  width: 400px;
+  padding: 6px 24px 24px;
+  background: white;
+  border: 1px solid black;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.header-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-button {
+  width: 25%;
+  padding: 12px;
+  font-size: 16px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.prayer-card textarea {
+  width: 100%;
+  box-sizing: border-box;
+  margin: 16px 0;
+  padding: 12px;
+  font-size: 16px;
+  resize: vertical;
+}
+
+.save-button {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  cursor: pointer;
+}
