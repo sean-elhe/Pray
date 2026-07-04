@@ -1,14 +1,16 @@
 import { useState, useEffect } from "react";
 import "./index.css";
 import "./App.css";
+
 import HomeScreen from "./components/homescreen";
 import SavedScreen from "./components/savedscreen";
+import PublicScreen from "./components/publicscreen";
 import Login from "./components/login";
 
 import { useAuth } from "./auth/useAuth";
 import type { Prayer } from "./types";
 
-type Screen = "home" | "saved";
+type Screen = "home" | "saved" | "public";
 
 function App() {
   const { user, loading } = useAuth();
@@ -39,6 +41,13 @@ function App() {
     const response = await fetch("http://localhost:3001/prayers", {
       credentials: "include",
     });
+
+    const data = await response.json();
+    setPrayers(data);
+  }
+
+  async function getPublicPrayers() {
+    const response = await fetch("http://localhost:3001/prayers/public");
 
     const data = await response.json();
     setPrayers(data);
@@ -78,8 +87,14 @@ function App() {
   }
 
   useEffect(() => {
-    getPrayers();
-  }, []);
+    if (screen === "saved") {
+      getPrayers();
+    }
+
+    if (screen === "public") {
+      getPublicPrayers();
+    }
+  }, [screen, user]);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -96,15 +111,18 @@ function App() {
           prayerText={prayerText}
           setPrayerText={setPrayerText}
           savePrayer={savePrayer}
+          goToPublic={() => setScreen(`public`)}
           goToSaved={() => setScreen(`saved`)}
         />
-      ) : (
+      ) : screen === `saved` ? (
         <SavedScreen
           prayers={prayers}
           deletePrayer={deletePrayer}
           changePrayer={changePrayer}
           goBack={() => setScreen(`home`)}
         />
+      ) : (
+        <PublicScreen prayers={prayers} goBack={() => setScreen(`home`)} />
       )}
     </div>
   );

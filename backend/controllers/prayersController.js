@@ -20,9 +20,30 @@ export const getPrayers = async (req, res) => {
       [userId],
     );
 
-    res.json(result.rows);
+    return res.json(result.rows);
   } catch (err) {
     console.error("GET /prayers error:", err);
+    res.status(500).json({ error: "Database error" });
+  }
+};
+
+export const getPublicPrayers = async (req, res) => {
+  try {
+    const result = await pool.query(`
+      SELECT
+        prayers.id,
+        prayers.content,
+        prayers.is_answered,
+        prayers.created_at,
+        users.name
+      FROM prayers
+      JOIN users ON prayers.user_id = users.id
+      ORDER BY prayers.created_at DESC;
+    `);
+
+    return res.json(result.rows);
+  } catch (err) {
+    console.error("GET /prayers/public error:", err);
     res.status(500).json({ error: "Database error" });
   }
 };

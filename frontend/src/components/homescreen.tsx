@@ -6,6 +6,7 @@ type HomeScreenProps = {
   setPrayerText: React.Dispatch<React.SetStateAction<string>>;
   savePrayer: () => void;
   goToSaved: () => void;
+  goToPublic: () => void;
 };
 
 function HomeScreen({
@@ -13,11 +14,13 @@ function HomeScreen({
   setPrayerText,
   savePrayer,
   goToSaved,
+  goToPublic,
 }: HomeScreenProps) {
   return (
     <div className="prayer-card">
       <div className="header-card">
         <h2>Prayer</h2>
+        <button onClick={goToPublic}>Public</button>
         <button onClick={goToSaved}>Saved</button>
       </div>
 
