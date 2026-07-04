@@ -1,5 +1,5 @@
 // import '../index.css';
-import './homescreen.css';
+import "./homescreen.css";
 
 type HomeScreenProps = {
   prayerText: string;
