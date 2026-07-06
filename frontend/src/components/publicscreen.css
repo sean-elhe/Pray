@@ -32,3 +32,208 @@
   margin-top: 12px;
   width: 100%;
 }
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  /* spacing system (KEY UPGRADE) */
+  --space-1: 8px;
+  --space-2: 12px;
+  --space-3: 16px;
+  --space-4: 24px;
+  --space-5: 32px;
+
+  --bg: #f7f4ed;
+  --surface: #fcfaf7;
+  --text: #252525;
+  --muted: #777;
+
+  --sage1: #b6c1b0;
+  --sage2: #a8b4a2;
+
+  --sand1: #e2ccb2;
+  --sand2: #d4bb9c;
+
+  --slate1: #8592a4;
+  --slate2: #717f92;
+}
+
+/* BASE */
+body {
+  font-family: Manrope, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+/* APP LAYOUT */
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+
+  padding: var(--space-4) var(--space-3)
+    calc(88px + env(safe-area-inset-bottom));
+}
+
+/* BACKGROUND GLOW (reduced intensity for polish) */
+.background-glow {
+  position: fixed;
+  width: 700px;
+  height: 700px;
+
+  left: 50%;
+  top: 10%;
+  transform: translateX(-50%);
+
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.75),
+    transparent 65%
+  );
+
+  filter: blur(80px);
+  z-index: -1;
+}
+
+/* HEADER (tighter + more premium feel) */
+header {
+  text-align: center;
+  margin-bottom: var(--space-4);
+  padding-top: var(--space-2);
+}
+
+header h1 {
+  font-family: "Instrument Serif", serif;
+  font-size: 1.9rem;
+  font-weight: 400;
+  letter-spacing: 0.3px;
+}
+
+/* MAIN FEED */
+main {
+  padding-top: var(--space-4);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+
+  gap: var(--space-3);
+
+  max-width: 520px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* CARD (refined proportions) */
+.card {
+  width: 100%;
+  min-height: 140px;
+
+  border-radius: 24px;
+  padding: var(--space-4);
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.12);
+}
+
+/* TYPOGRAPHY INSIDE CARD */
+.card h2 {
+  font-size: 1.6rem;
+  font-weight: 300;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  line-height: 1.1;
+}
+
+/* CARD FOOTER */
+.bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  font-size: 0.85rem;
+  color: rgba(0, 0, 0, 0.65);
+}
+
+/* THEMES (slightly softened for premium feel) */
+.sage {
+  background: linear-gradient(135deg, var(--sage1), var(--sage2));
+}
+
+.sand {
+  background: linear-gradient(135deg, var(--sand1), var(--sand2));
+}
+
+.slate {
+  background: linear-gradient(135deg, var(--slate1), var(--slate2));
+  color: white;
+}
+
+.slate .bottom {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* NAV (lighter, more modern iOS feel) */
+nav {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  height: 72px;
+
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(18px);
+
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* NAV BUTTONS */
+nav button {
+  background: none;
+  border: none;
+
+  font-size: 1.35rem;
+  color: #6d655d;
+
+  cursor: pointer;
+}
+
+/* CENTER ACTION BUTTON (refined floating feel) */
+.add {
+  width: 54px;
+  height: 54px;
+
+  border-radius: 50%;
+  background: #847562;
+  color: white;
+
+  font-size: 1.8rem;
+
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.18);
+
+  transform: translateY(-8px);
+}

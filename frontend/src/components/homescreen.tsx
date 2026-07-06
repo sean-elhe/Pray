@@ -1,39 +1,44 @@
-// import '../index.css';
 import "./homescreen.css";
 
 type HomeScreenProps = {
-  prayerText: string;
-  setPrayerText: React.Dispatch<React.SetStateAction<string>>;
-  savePrayer: () => void;
-  goToSaved: () => void;
   goToPublic: () => void;
+  goToSaved: () => void;
 };
 
-function HomeScreen({
-  prayerText,
-  setPrayerText,
-  savePrayer,
-  goToSaved,
-  goToPublic,
-}: HomeScreenProps) {
+export default function HomeScreen({ goToPublic, goToSaved }: HomeScreenProps) {
   return (
-    <div className="prayer-card">
-      <div className="header-card">
-        <h2>Prayer</h2>
-        <button onClick={goToPublic}>Public</button>
-        <button onClick={goToSaved}>Saved</button>
-      </div>
+    <>
+      <div className="background-glow" />
 
-      <textarea
-        rows={8}
-        value={prayerText}
-        placeholder="Write your prayer here..."
-        onChange={(e) => setPrayerText(e.target.value)}
-      />
+      <header>
+        <h1>Prayer Cards</h1>
+      </header>
 
-      <button onClick={savePrayer}>Save Prayer</button>
-    </div>
+      <main>
+        <div className="card sage">
+          <h2>Public</h2>
+          <button onClick={goToPublic} className="bottom">
+            →
+          </button>
+        </div>
+
+        <div className="card sand">
+          <h2>Shared</h2>
+          <div className="bottom">
+            <span></span>
+            <span> →</span>
+          </div>
+        </div>
+
+        <div className="card slate">
+          <h2>Self</h2>
+          <button onClick={goToSaved} className="bottom">
+            →
+          </button>
+        </div>
+      </main>
+
+      {}
+    </>
   );
 }
-
-export default HomeScreen;

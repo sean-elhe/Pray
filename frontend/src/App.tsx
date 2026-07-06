@@ -2,21 +2,29 @@ import { useState, useEffect } from "react";
 import "./index.css";
 import "./App.css";
 
-import HomeScreen from "./components/homescreen";
+import AddScreen from "./components/addscreen";
 import SavedScreen from "./components/savedscreen";
 import PublicScreen from "./components/publicscreen";
-import Login from "./components/login";
+import HomeScreen from "./components/homescreen";
+import LoginModal from "./modals/loginmodal";
+import { NavBar } from "./modals/navbar";
 
 import { useAuth } from "./auth/useAuth";
 import type { Prayer } from "./types";
+import ProfileModal from "./modals/profilemodal";
 
-type Screen = "home" | "saved" | "public";
+type Screen = "add" | "saved" | "public" | "home";
 
 function App() {
-  const { user, loading } = useAuth();
+  const { user } = useAuth();
   const [screen, setScreen] = useState<Screen>("home");
   const [prayerText, setPrayerText] = useState("");
   const [prayers, setPrayers] = useState<Prayer[]>([]);
+  const [showLogin, setShowLogin] = useState(false);
+  const [showProfile, setShowProfile] = useState(false);
+  const [modal, setModal] = useState<"login" | "settings" | "profile" | null>(
+    null,
+  );
 
   async function savePrayer() {
     const response = await fetch("http://localhost:3001/prayers", {
@@ -87,30 +95,37 @@ function App() {
   }
 
   useEffect(() => {
-    if (screen === "saved") {
-      getPrayers();
-    }
-
-    if (screen === "public") {
-      getPublicPrayers();
-    }
-  }, [screen, user]);
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (!user) {
-    return <Login />;
-  }
+    if (screen === "saved") getPrayers();
+    if (screen === "public") getPublicPrayers();
+  }, [screen]);
 
   return (
     <div className="app">
-      {screen === `home` ? (
-        <HomeScreen
+      {modal === "login" && <LoginModal close={() => setModal(null)} />}
+      {modal === "settings" && <LoginModal close={() => setModal(null)} />}
+      {modal === "profile" && <LoginModal close={() => setModal(null)} />}
+
+      {showLogin && <LoginModal close={() => setShowLogin(false)} />}
+      {showProfile && <ProfileModal close={() => setShowProfile(false)} />}
+
+      {
+        <NavBar
+          goToHome={() => setScreen(`home`)}
+          goToAdd={() => setScreen(`add`)}
+          goToAccount={
+            !user ? () => setShowLogin(true) : () => setShowProfile(true)
+          }
+        />
+      }
+
+      {screen === `add` ? (
+        <AddScreen
           prayerText={prayerText}
           setPrayerText={setPrayerText}
           savePrayer={savePrayer}
+        />
+      ) : screen === `home` ? (
+        <HomeScreen
           goToPublic={() => setScreen(`public`)}
           goToSaved={() => setScreen(`saved`)}
         />

@@ -8,23 +8,30 @@ type PublicScreenProps = {
 
 function PublicScreen({ prayers, goBack }: PublicScreenProps) {
   return (
-    <div className="prayer-card">
-      <div className="header-card">
-        <h2>Public Prayers</h2>
+    // <div className="prayer-card">
+    <>
+      <div className="header">
+        <div className="header-card">
+          <h2>Public Prayers</h2>
 
-        <button onClick={goBack}>Back</button>
+          <button onClick={goBack}>Back</button>
+        </div>
       </div>
 
-      {prayers.map((prayer) => (
-        <div className="saved-card" key={prayer.id}>
-          <p>{prayer.content}</p>
+      <main>
+        {prayers.map((prayer) => (
+          <div className="saved-card" key={prayer.id}>
+            <p>{prayer.content}</p>
 
-          <small>By {prayer.name}</small>
+            <small>By {prayer.name}</small>
 
-          {prayer.is_answered && <p className="answered">✅ Answered</p>}
-        </div>
-      ))}
-    </div>
+            {prayer.is_answered && <p className="answered">✅ Answered</p>}
+          </div>
+        ))}
+      </main>
+
+      {}
+    </>
   );
 }
 
