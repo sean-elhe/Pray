@@ -9,20 +9,24 @@ type AddScreenProps = {
 
 function AddScreen({ prayerText, setPrayerText, savePrayer }: AddScreenProps) {
   return (
-    <div className="prayer-card">
-      <header>
-        <h1>Add Prayer</h1>
+    <>
+      <header className="addHeader">
+        <button>Category</button>
       </header>
+      <main className="addMain">
+        <textarea
+          id="add-main"
+          rows={24}
+          value={prayerText}
+          placeholder="Our Father in heaven, hallowed be Your name."
+          onChange={(e) => setPrayerText(e.target.value)}
+        />
+      </main>
 
-      <textarea
-        rows={8}
-        value={prayerText}
-        placeholder="Our Father in heaven, hallowed be Your name."
-        onChange={(e) => setPrayerText(e.target.value)}
-      />
-
-      <button onClick={savePrayer}>Save Prayer</button>
-    </div>
+      <button className="save-btn" onClick={savePrayer}>
+        Save
+      </button>
+    </>
   );
 }
 

@@ -95,9 +95,14 @@ function App() {
   }
 
   useEffect(() => {
-    if (screen === "saved") getPrayers();
-    if (screen === "public") getPublicPrayers();
-  }, [screen]);
+    if (screen === "saved") {
+      getPrayers();
+    }
+
+    if (screen === "public") {
+      getPublicPrayers();
+    }
+  }, [screen, user]);
 
   return (
     <div className="app">
@@ -137,7 +142,7 @@ function App() {
           goBack={() => setScreen(`home`)}
         />
       ) : (
-        <PublicScreen prayers={prayers} goBack={() => setScreen(`home`)} />
+        <PublicScreen prayers={prayers} />
       )}
     </div>
   );
