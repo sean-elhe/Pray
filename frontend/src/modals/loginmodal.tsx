@@ -54,7 +54,7 @@ export default function LoginModal({ close }: LoginModalProps) {
           ✕
         </button>
 
-        <h2>{mode === "register" ? "Create account" : "Welcome back"}</h2>
+        <h2>{mode === "register" ? "Create account" : "Log in"}</h2>
 
         <p className="subtitle">
           {mode === "register"

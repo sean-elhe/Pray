@@ -1,71 +1,107 @@
-// import '../index.css';
-import "./savedscreen.css";
-import type { Prayer } from "../types";
 import { useState } from "react";
+import type { Prayer } from "../types";
+import PrayerCard from "../modals/prayercard";
+import { usePrayerNavigation } from "../hooks/navigation";
 
 type SavedScreenProps = {
   prayers: Prayer[];
   deletePrayer: (id: number) => void;
   changePrayer: (id: number, content: string) => void;
-  goBack: () => void;
 };
 
-function SavedScreen({
+export default function SavedScreen({
   prayers,
   deletePrayer,
   changePrayer,
-  goBack,
 }: SavedScreenProps) {
-  const [editingId, setEditingId] = useState<number | null>(null);
+  const { currentPrayer, currentIndex, direction, next, previous } =
+    usePrayerNavigation(prayers);
+
+  const [selectedPrayer, setSelectedPrayer] = useState<Prayer | null>(null);
+  const [editing, setEditing] = useState(false);
   const [editText, setEditText] = useState("");
 
-  return (
-    <div className="prayer-card">
-      <div className="header-card">
-        <h2>Saved Prayers</h2>
+  if (prayers.length === 0) {
+    return (
+      <>
+        <header>
+          <h1>Saved Prayers</h1>
+        </header>
 
-        <button onClick={goBack}>Back</button>
+        <main>
+          <p>No prayers available.</p>
+        </main>
+      </>
+    );
+  }
+
+  const openMenu = () => {
+    setSelectedPrayer(currentPrayer);
+  };
+
+  return (
+    <>
+      <header>
+        <h1>Saved Prayers</h1>
+      </header>
+
+      <main>
+        <PrayerCard
+          key={currentPrayer.id}
+          prayer={currentPrayer}
+          onNext={next}
+          onPrevious={previous}
+          direction={direction}
+          onLongPress={openMenu}
+        />
+      </main>
+
+      <div className="counter">
+        {currentIndex + 1} / {prayers.length}
       </div>
 
-      {prayers.map((prayer) => (
-        <div className="saved-card" key={prayer.id}>
-          {editingId === prayer.id ? (
-            <>
-              <input
-                type="text"
-                value={editText}
-                onChange={(e) => setEditText(e.target.value)}
-              />
+      {selectedPrayer && (
+        <div className="prayer-menu">
+          <button
+            onClick={() => {
+              setEditing(true);
+              setEditText(selectedPrayer.content);
+            }}
+          >
+            Edit
+          </button>
 
-              <button
-                onClick={() => {
-                  changePrayer(editingId, editText);
-                  setEditingId(null);
-                }}
-              >
-                Save
-              </button>
-            </>
-          ) : (
-            <>
-              <p>{prayer.content}</p>
+          <button
+            onClick={() => {
+              deletePrayer(selectedPrayer.id);
+              setSelectedPrayer(null);
+            }}
+          >
+            Delete
+          </button>
 
-              <button
-                onClick={() => {
-                  setEditingId(prayer.id);
-                  setEditText(prayer.content);
-                }}
-              >
-                Edit
-              </button>
-            </>
-          )}
-          {/* <small>By {prayer.name}</small> */}
-          <button onClick={() => deletePrayer(prayer.id)}>Delete</button>
+          <button onClick={() => setSelectedPrayer(null)}>Cancel</button>
         </div>
-      ))}
-    </div>
+      )}
+
+      {editing && selectedPrayer && (
+        <div className="edit-modal">
+          <input
+            value={editText}
+            onChange={(e) => setEditText(e.target.value)}
+          />
+
+          <button
+            onClick={() => {
+              changePrayer(selectedPrayer.id, editText);
+              setEditing(false);
+              setSelectedPrayer(null);
+            }}
+          >
+            Save
+          </button>
+        </div>
+      )}
+    </>
   );
 }
-
-export default SavedScreen;

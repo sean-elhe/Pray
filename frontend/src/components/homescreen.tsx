@@ -24,7 +24,7 @@ export default function HomeScreen({ goToPublic, goToSaved }: HomeScreenProps) {
         </button>
 
         <button onClick={goToSaved} className="card slate">
-          <h2>Self</h2>
+          <h2>Saved</h2>
         </button>
       </main>
 

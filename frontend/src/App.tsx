@@ -116,7 +116,7 @@ function App() {
       {
         <NavBar
           goToHome={() => setScreen(`home`)}
-          goToAdd={() => setScreen(`add`)}
+          goToAdd={!user ? () => setShowLogin(true) : () => setScreen(`add`)}
           goToAccount={
             !user ? () => setShowLogin(true) : () => setShowProfile(true)
           }
@@ -132,14 +132,15 @@ function App() {
       ) : screen === `home` ? (
         <HomeScreen
           goToPublic={() => setScreen(`public`)}
-          goToSaved={() => setScreen(`saved`)}
+          goToSaved={
+            !user ? () => setShowLogin(true) : () => setScreen(`saved`)
+          }
         />
       ) : screen === `saved` ? (
         <SavedScreen
           prayers={prayers}
           deletePrayer={deletePrayer}
           changePrayer={changePrayer}
-          goBack={() => setScreen(`home`)}
         />
       ) : (
         <PublicScreen prayers={prayers} />
