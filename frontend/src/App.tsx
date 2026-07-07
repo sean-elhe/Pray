@@ -2,10 +2,10 @@ import { useState, useEffect } from "react";
 import "./index.css";
 import "./App.css";
 
-import AddScreen from "./components/addscreen";
-import SavedScreen from "./components/savedscreen";
-import PublicScreen from "./components/publicscreen";
-import HomeScreen from "./components/homescreen";
+import AddScreen from "./components/AddScreen";
+import SavedScreen from "./components/SavedScreen";
+import PublicScreen from "./components/PublicScreen";
+import HomeScreen from "./components/HomeScreen";
 import LoginModal from "./modals/loginmodal";
 import { NavBar } from "./modals/navbar";
 

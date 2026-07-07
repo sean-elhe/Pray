@@ -1,5 +1,5 @@
 import type { Prayer } from "../types";
-import PrayerCard from "../modals/prayercard";
+import PrayerCard from "../modals/PrayerCard";
 import { usePrayerNavigation } from "../hooks/navigation";
 
 type PublicScreenProps = {
@@ -27,7 +27,7 @@ export default function PublicScreen({ prayers }: PublicScreenProps) {
   return (
     <>
       <header>
-        <h1>Public Prayers</h1>
+        <h1></h1>
       </header>
 
       <main>

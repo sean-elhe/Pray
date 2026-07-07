@@ -2,6 +2,9 @@ import "./prayercard.css";
 import type { Prayer } from "../types";
 import { motion } from "framer-motion";
 import { useRef } from "react";
+import dayjs from "dayjs";
+import { useEffect, useState } from "react";
+import { Check, X } from "lucide-react";
 
 type PrayerCardProps = {
   prayer: Prayer;
@@ -9,6 +12,9 @@ type PrayerCardProps = {
   onPrevious: () => void;
   onLongPress: () => void;
   direction: number;
+  editing: boolean;
+  onSaveEdit: (content: string) => void;
+  onCancelEdit: () => void;
 };
 
 export default function PrayerCard({
@@ -17,6 +23,9 @@ export default function PrayerCard({
   onPrevious,
   onLongPress,
   direction,
+  editing,
+  onSaveEdit,
+  onCancelEdit,
 }: PrayerCardProps) {
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -33,46 +42,86 @@ export default function PrayerCard({
     }
   };
 
+  const formatted = dayjs(prayer.created_at).format("MMMM D, YYYY - h:mm a");
+
+  const [text, setText] = useState(prayer.content);
+
+  useEffect(() => {
+    setText(prayer.content);
+  }, [prayer]);
+
   return (
-    <motion.div
-      className="saved-card"
-      onPointerDown={startPress}
-      onPointerUp={endPress}
-      onPointerLeave={endPress}
-      initial={{
-        opacity: 0,
-        x: direction > 0 ? 150 : -150,
-      }}
-      animate={{
-        opacity: 1,
-        x: 0,
-      }}
-      exit={{
-        opacity: 0,
-        x: direction > 0 ? -150 : 150,
-      }}
-      transition={{
-        duration: 0.25,
-        ease: "easeOut",
-      }}
-      drag="x"
-      dragConstraints={{ left: 0, right: 0 }}
-      dragElastic={0.15}
-      onDragEnd={(_, info) => {
-        if (info.offset.x < -100) {
-          onNext();
-        }
+    <div className="main">
+      <motion.div
+        className="saved-card"
+        onPointerDown={startPress}
+        onPointerUp={endPress}
+        onPointerLeave={endPress}
+        initial={{
+          opacity: 0,
+          x: direction > 0 ? 150 : -150,
+        }}
+        animate={{
+          opacity: 1,
+          x: 0,
+        }}
+        exit={{
+          opacity: 0,
+          x: direction > 0 ? -150 : 150,
+        }}
+        transition={{
+          duration: 0.25,
+          ease: "easeOut",
+        }}
+        drag={editing ? false : "x"}
+        dragConstraints={{ left: 0, right: 0 }}
+        dragElastic={0.15}
+        onDragEnd={(_, info) => {
+          if (info.offset.x < -100) {
+            onNext();
+          }
 
-        if (info.offset.x > 100) {
-          onPrevious();
-        }
-      }}
-    >
-      <p>{prayer.content}</p>
+          if (info.offset.x > 100) {
+            onPrevious();
+          }
+        }}
+      >
+        {editing ? (
+          <>
+            <textarea
+              className="prayer-edit"
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+            />
 
-      <small>By {prayer.name}</small>
+            {/* <div className="card-actions">
+              <button className="edit-cancel" onClick={onCancelEdit}>
+                <X size={22}></X>
+              </button>
+              <button className="edit-save" onClick={() => onSaveEdit(text)}>
+                <Check size={22}></Check>
+              </button>
+            </div> */}
+          </>
+        ) : (
+          <p className="prayer-body">{prayer.content}</p>
+        )}
 
-      {prayer.is_answered && <p className="answered">✅ Answered</p>}
-    </motion.div>
+        <small className="prayer-date">{formatted}</small>
+
+        {prayer.is_answered && <p className="answered">✅ Answered</p>}
+      </motion.div>
+
+      {editing && (
+        <div className="card-actions">
+          <button className="edit-cancel" onClick={onCancelEdit}>
+            <X size={22}></X>
+          </button>
+          <button className="edit-save" onClick={() => onSaveEdit(text)}>
+            <Check size={22}></Check>
+          </button>
+        </div>
+      )}
+    </div>
   );
 }

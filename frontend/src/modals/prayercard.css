@@ -1,35 +1,96 @@
-.card-container {
-  width: 100%;
-  max-width: 450px;
-  margin: auto;
-
+.app {
+  height: 100dvh;
   display: flex;
-  flex-direction: column;
+}
+
+.card-container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
   align-items: center;
+  padding: 24px;
 }
 
 .saved-card {
   width: 100%;
-  min-height: 500px;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+  max-width: 420px;
+  height: 70dvh;
 
-  background: white;
-  border-radius: 24px;
-  padding: 32px;
-
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.05),
+    0 12px 30px rgba(0, 0, 0, 0.08);
+  background: linear-gradient(to bottom, #fafafa, #f2f2f2);
+  border: 1px solid rgba(44, 39, 39, 0.05);
+  border-radius: 16px;
+  padding: 24px 20px;
   user-select: none;
   touch-action: pan-y;
   cursor: grab;
+  display: flex;
+  flex-direction: column;
+
+  transition:
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.prayer-body {
+  position: relative;
+  padding: 48px 24px;
+
+  font-size: 24px;
+  font-family: Georgia, "Times New Roman", Times, serif;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.prayer-edit {
+  position: relative;
+  padding: 48px 24px;
+  border: none;
+  background: linear-gradient(to bottom, #fafafa, #f2f2f2);
+  font-size: 24px;
+  font-family: Georgia, "Times New Roman", Times, serif;
+  flex: 1;
+  overflow-y: auto;
 }
 
 .saved-card:active {
   cursor: grabbing;
 }
 
-.controls {
-  margin-top: 24px;
+.saved-card.dragging {
+  transform: scale(0.985);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.18);
+}
 
+.saved-card:hover {
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 6px 20px rgba(0, 0, 0, 0.08),
+    0 18px 40px rgba(0, 0, 0, 0.12);
+}
+
+.card-actions {
   display: flex;
-  align-items: center;
-  gap: 24px;
+  flex-direction: row;
+  justify-content: space-evenly;
+  gap: 22px;
+  padding: 24px 30px 24px 30px;
+}
+
+.card-actions button {
+  border-radius: 24px;
+  padding: 6px;
+  margin-bottom: -14px;
+  width: 40%;
+}
+
+.edit-cancel {
+  background-color: #ed4337;
+}
+
+.edit-save {
+  background-color: #00a36c;
 }

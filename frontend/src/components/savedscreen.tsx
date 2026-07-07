@@ -1,6 +1,8 @@
+import "../modals/prayercard.css";
 import { useState } from "react";
 import type { Prayer } from "../types";
-import PrayerCard from "../modals/prayercard";
+import PrayerCard from "../modals/PrayerCard";
+import PrayerMenu from "../modals/prayermenu";
 import { usePrayerNavigation } from "../hooks/navigation";
 
 type SavedScreenProps = {
@@ -18,8 +20,9 @@ export default function SavedScreen({
     usePrayerNavigation(prayers);
 
   const [selectedPrayer, setSelectedPrayer] = useState<Prayer | null>(null);
-  const [editing, setEditing] = useState(false);
-  const [editText, setEditText] = useState("");
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const [editingId, setEditingId] = useState<number | null>(null);
 
   if (prayers.length === 0) {
     return (
@@ -37,12 +40,34 @@ export default function SavedScreen({
 
   const openMenu = () => {
     setSelectedPrayer(currentPrayer);
+    setMenuOpen(true);
+  };
+
+  const closeMenu = () => {
+    setMenuOpen(false);
+  };
+
+  const openEditor = () => {
+    setMenuOpen(false);
+
+    if (selectedPrayer) {
+      setEditingId(selectedPrayer.id);
+    }
+  };
+
+  const handleDelete = () => {
+    if (!selectedPrayer) return;
+
+    deletePrayer(selectedPrayer.id);
+
+    setSelectedPrayer(null);
+    setMenuOpen(false);
   };
 
   return (
     <>
       <header>
-        <h1>Saved Prayers</h1>
+        <h1></h1>
       </header>
 
       <main>
@@ -53,6 +78,12 @@ export default function SavedScreen({
           onPrevious={previous}
           direction={direction}
           onLongPress={openMenu}
+          editing={editingId === currentPrayer.id}
+          onSaveEdit={(content) => {
+            changePrayer(currentPrayer.id, content);
+            setEditingId(null);
+          }}
+          onCancelEdit={() => setEditingId(null)}
         />
       </main>
 
@@ -60,48 +91,12 @@ export default function SavedScreen({
         {currentIndex + 1} / {prayers.length}
       </div>
 
-      {selectedPrayer && (
-        <div className="prayer-menu">
-          <button
-            onClick={() => {
-              setEditing(true);
-              setEditText(selectedPrayer.content);
-            }}
-          >
-            Edit
-          </button>
-
-          <button
-            onClick={() => {
-              deletePrayer(selectedPrayer.id);
-              setSelectedPrayer(null);
-            }}
-          >
-            Delete
-          </button>
-
-          <button onClick={() => setSelectedPrayer(null)}>Cancel</button>
-        </div>
-      )}
-
-      {editing && selectedPrayer && (
-        <div className="edit-modal">
-          <input
-            value={editText}
-            onChange={(e) => setEditText(e.target.value)}
-          />
-
-          <button
-            onClick={() => {
-              changePrayer(selectedPrayer.id, editText);
-              setEditing(false);
-              setSelectedPrayer(null);
-            }}
-          >
-            Save
-          </button>
-        </div>
-      )}
+      <PrayerMenu
+        open={menuOpen}
+        onClose={closeMenu}
+        onEdit={openEditor}
+        onDelete={handleDelete}
+      />
     </>
   );
 }

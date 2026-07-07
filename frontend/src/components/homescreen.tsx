@@ -11,7 +11,7 @@ export default function HomeScreen({ goToPublic, goToSaved }: HomeScreenProps) {
       <div className="background-glow" />
 
       <header>
-        <h1>Prayer Cards</h1>
+        <h1></h1>
       </header>
 
       <main>
