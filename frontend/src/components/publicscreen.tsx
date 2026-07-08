@@ -38,6 +38,9 @@ export default function PublicScreen({ prayers }: PublicScreenProps) {
           onPrevious={previous}
           direction={direction}
           onLongPress={() => {}}
+          editing={false}
+          onCancelEdit={() => {}}
+          onSaveEdit={() => {}}
         />
       </main>
 
