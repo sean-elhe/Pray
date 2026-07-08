@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import "./index.css";
 import "./App.css";
+import { useToast } from "./context/ToastContext";
 
 import AddScreen from "./components/AddScreen";
 import SavedScreen from "./components/SavedScreen";
@@ -17,6 +18,7 @@ type Screen = "add" | "saved" | "public" | "home";
 
 function App() {
   const { user } = useAuth();
+  const { showToast } = useToast();
   const [screen, setScreen] = useState<Screen>("home");
   const [prayerText, setPrayerText] = useState("");
   const [prayers, setPrayers] = useState<Prayer[]>([]);
@@ -43,6 +45,7 @@ function App() {
 
     await getPrayers();
     setPrayerText("");
+    showToast("Card saved");
   }
 
   async function getPrayers() {

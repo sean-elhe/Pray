@@ -4,7 +4,6 @@ import { motion } from "framer-motion";
 import { useRef } from "react";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
-import { Check, X } from "lucide-react";
 
 type PrayerCardProps = {
   prayer: Prayer;
@@ -29,8 +28,16 @@ export default function PrayerCard({
 }: PrayerCardProps) {
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  const startX = useRef(0);
+  const startY = useRef(0);
+  const wasDragging = useRef(false);
+  const longPressed = useRef(false);
+
   const startPress = () => {
+    longPressed.current = false;
+
     timer.current = setTimeout(() => {
+      longPressed.current = true;
       onLongPress();
     }, 600);
   };
@@ -39,6 +46,45 @@ export default function PrayerCard({
     if (timer.current) {
       clearTimeout(timer.current);
       timer.current = null;
+    }
+  };
+
+  const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (editing) return;
+
+    startX.current = e.clientX;
+    startY.current = e.clientY;
+    wasDragging.current = false;
+
+    startPress();
+  };
+
+  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    const dx = Math.abs(e.clientX - startX.current);
+    const dy = Math.abs(e.clientY - startY.current);
+
+    if (dx > 10 || dy > 10) {
+      wasDragging.current = true;
+      endPress();
+    }
+  };
+
+  const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
+    endPress();
+
+    if (editing) return;
+    if (wasDragging.current) return;
+    if (longPressed.current) return;
+
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+
+    const EDGE_PERCENT = 0.2;
+
+    if (x < rect.width * EDGE_PERCENT) {
+      onPrevious();
+    } else if (x > rect.width * (1 - EDGE_PERCENT)) {
+      onNext();
     }
   };
 
@@ -54,8 +100,9 @@ export default function PrayerCard({
     <div className="main">
       <motion.div
         className="saved-card"
-        onPointerDown={startPress}
-        onPointerUp={endPress}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
         onPointerLeave={endPress}
         initial={{
           opacity: 0,
@@ -93,15 +140,6 @@ export default function PrayerCard({
               value={text}
               onChange={(e) => setText(e.target.value)}
             />
-
-            {/* <div className="card-actions">
-              <button className="edit-cancel" onClick={onCancelEdit}>
-                <X size={22}></X>
-              </button>
-              <button className="edit-save" onClick={() => onSaveEdit(text)}>
-                <Check size={22}></Check>
-              </button>
-            </div> */}
           </>
         ) : (
           <p className="prayer-body">{prayer.content}</p>
@@ -115,10 +153,10 @@ export default function PrayerCard({
       {editing && (
         <div className="card-actions">
           <button className="edit-cancel" onClick={onCancelEdit}>
-            <X size={22}></X>
+            Cancel
           </button>
           <button className="edit-save" onClick={() => onSaveEdit(text)}>
-            <Check size={22}></Check>
+            Save
           </button>
         </div>
       )}

@@ -36,7 +36,7 @@
 
 .prayer-body {
   position: relative;
-  padding: 48px 24px;
+  padding: 24px;
 
   font-size: 24px;
   font-family: Georgia, "Times New Roman", Times, serif;
@@ -46,13 +46,24 @@
 
 .prayer-edit {
   position: relative;
-  padding: 48px 24px;
+  padding: 24px;
   border: none;
   background: linear-gradient(to bottom, #fafafa, #f2f2f2);
   font-size: 24px;
   font-family: Georgia, "Times New Roman", Times, serif;
   flex: 1;
   overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.prayer-edit::-webkit-scrollbar {
+  display: none;
+}
+
+.prayer-date {
+  margin-top: 8px;
 }
 
 .saved-card:active {
@@ -85,6 +96,7 @@
   padding: 6px;
   margin-bottom: -14px;
   width: 40%;
+  font-size: 18px;
 }
 
 .edit-cancel {

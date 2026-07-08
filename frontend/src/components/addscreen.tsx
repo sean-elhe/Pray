@@ -1,5 +1,5 @@
-// import '../index.css';
-import "./addscreen.css";
+import "../modals/prayercard.css";
+import Toast from "./Toast";
 
 type AddScreenProps = {
   prayerText: string;
@@ -8,24 +8,29 @@ type AddScreenProps = {
 };
 
 function AddScreen({ prayerText, setPrayerText, savePrayer }: AddScreenProps) {
+  const clear = () => {
+    setPrayerText("");
+  };
+
   return (
     <>
-      <header className="addHeader">
-        <button>Category</button>
-      </header>
-      <main className="addMain">
-        <textarea
-          id="add-main"
-          rows={24}
-          value={prayerText}
-          placeholder="Our Father in heaven, hallowed be Your name."
-          onChange={(e) => setPrayerText(e.target.value)}
-        />
-      </main>
-
-      <button className="save-btn" onClick={savePrayer}>
-        Save
-      </button>
+      <div className="main">
+        <div className="saved-card">
+          <textarea
+            className="prayer-edit"
+            value={prayerText}
+            onChange={(e) => setPrayerText(e.target.value)}
+          />
+        </div>
+        <div className="card-actions">
+          <button className="edit-cancel" onClick={clear}>
+            Clear
+          </button>
+          <button className="edit-save" onClick={savePrayer}>
+            Save
+          </button>
+        </div>
+      </div>
     </>
   );
 }

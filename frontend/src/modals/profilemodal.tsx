@@ -1,5 +1,6 @@
 import "./loginmodal.css";
 import { useAuth } from "../auth/useAuth";
+import { useToast } from "../context/ToastContext";
 
 type ProfileModalProps = {
   close: () => void;
@@ -7,10 +8,12 @@ type ProfileModalProps = {
 
 export default function ProfileModal({ close }: ProfileModalProps) {
   const { logout } = useAuth();
+  const { showToast } = useToast();
 
   async function handleLogout() {
     await logout();
     close();
+    showToast("Logged out");
   }
 
   return (

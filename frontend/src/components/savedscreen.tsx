@@ -4,6 +4,7 @@ import type { Prayer } from "../types";
 import PrayerCard from "../modals/PrayerCard";
 import PrayerMenu from "../modals/prayermenu";
 import { usePrayerNavigation } from "../hooks/navigation";
+import { useToast } from "../context/ToastContext";
 
 type SavedScreenProps = {
   prayers: Prayer[];
@@ -23,6 +24,7 @@ export default function SavedScreen({
   const [menuOpen, setMenuOpen] = useState(false);
 
   const [editingId, setEditingId] = useState<number | null>(null);
+  const { showToast } = useToast();
 
   if (prayers.length === 0) {
     return (
@@ -62,6 +64,8 @@ export default function SavedScreen({
 
     setSelectedPrayer(null);
     setMenuOpen(false);
+
+    showToast("Card deleted");
   };
 
   return (
@@ -82,6 +86,7 @@ export default function SavedScreen({
           onSaveEdit={(content) => {
             changePrayer(currentPrayer.id, content);
             setEditingId(null);
+            showToast("Card updated");
           }}
           onCancelEdit={() => setEditingId(null)}
         />

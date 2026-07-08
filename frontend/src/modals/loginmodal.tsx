@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "../auth/useAuth";
+import { useToast } from "../context/ToastContext";
 import "./loginmodal.css";
 
 type LoginModalProps = {
@@ -10,6 +11,7 @@ export default function LoginModal({ close }: LoginModalProps) {
   const [mode, setMode] = useState<"login" | "register">("login");
 
   const { login } = useAuth();
+  const { showToast } = useToast();
 
   const [name, setName] = useState("");
   const [pin, setPin] = useState("");
@@ -36,11 +38,12 @@ export default function LoginModal({ close }: LoginModalProps) {
       if (!res.ok) throw new Error(data.error || "Request failed");
 
       if (mode === "register") {
-        alert("Account created! You can now log in.");
         setMode("login");
+        showToast("Account created!");
       } else {
         await login(name, pin);
         close();
+        showToast("Logged in!");
       }
     } catch (err) {
       alert(err instanceof Error ? err.message : "Unknown error");
