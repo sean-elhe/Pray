@@ -1,5 +1,4 @@
 import "../modals/prayercard.css";
-import Toast from "./Toast";
 
 type AddScreenProps = {
   prayerText: string;
@@ -19,6 +18,8 @@ function AddScreen({ prayerText, setPrayerText, savePrayer }: AddScreenProps) {
           <textarea
             className="prayer-edit"
             value={prayerText}
+            placeholder={`Our Father in heaven, \n\nHallowed be Your name, Your kingdom come, Your will be done, on earth as it is in heaven.\n\nGive us today our daily bread. And forgive us our debts, as we also have forgiven our debtors.\n\nAnd lead us not into temptation, but deliver us from the evil one.
+                `}
             onChange={(e) => setPrayerText(e.target.value)}
           />
         </div>
