@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:3001";
+const BASE_URL = import.meta.env.VITE_API_URL || "";
 
 export async function api(path: string, options: RequestInit = {}) {
   const res = await fetch(BASE_URL + path, {
@@ -9,6 +9,7 @@ export async function api(path: string, options: RequestInit = {}) {
     },
     ...options,
   });
+  console.log(BASE_URL);
 
   const data = await res.json();
 

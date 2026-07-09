@@ -6,9 +6,11 @@ import prayerRoutes from "./routes/prayers.js";
 
 const app = express();
 
+app.set("trust proxy", 1);
+
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: ["http://localhost:5173", "https://pray.elahi.app"],
     credentials: true,
   }),
 );
@@ -16,8 +18,8 @@ app.use(
 app.use(express.json());
 app.use(cookieParser());
 
-app.use("/auth", authRoutes);
-app.use("/prayers", prayerRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/prayers", prayerRoutes);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server running on port ${process.env.PORT}`);

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useAuth } from "../auth/useAuth";
 import { useToast } from "../context/ToastContext";
 import "./loginmodal.css";
+import { api } from "../api/client";
 
 type LoginModalProps = {
   close: () => void;
@@ -21,21 +22,12 @@ export default function LoginModal({ close }: LoginModalProps) {
 
     try {
       const url =
-        mode === "register"
-          ? "http://localhost:3001/auth/register"
-          : "http://localhost:3001/auth/login";
+        mode === "register" ? "/api/auth/register" : "/api/auth/login";
 
-      const res = await fetch(url, {
+      await api(url, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
         body: JSON.stringify({ name, pin }),
       });
-
-      const data = await res.json();
-
-      if (!res.ok) throw new Error(data.error || "Request failed");
 
       if (mode === "register") {
         setMode("login");

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import "./index.css";
 import "./App.css";
 import { useToast } from "./context/ToastContext";
+import { api } from "./api/client";
 
 import AddScreen from "./components/AddScreen";
 import SavedScreen from "./components/SavedScreen";
@@ -29,19 +30,12 @@ function App() {
   );
 
   async function savePrayer() {
-    const response = await fetch("http://localhost:3001/prayers", {
+    await api("/api/prayers", {
       method: "POST",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
       body: JSON.stringify({
         content: prayerText,
       }),
     });
-
-    console.log(response.status);
-    console.log(await response.text());
 
     await getPrayers();
     setPrayerText("");
@@ -49,47 +43,33 @@ function App() {
   }
 
   async function getPrayers() {
-    const response = await fetch("http://localhost:3001/prayers", {
-      credentials: "include",
-    });
-
-    const data = await response.json();
+    const data = await api("/api/prayers");
     setPrayers(data);
   }
 
   async function getPublicPrayers() {
-    const response = await fetch("http://localhost:3001/prayers/public");
-
-    const data = await response.json();
+    const data = await api("/api/prayers/public");
     setPrayers(data);
   }
 
   async function deletePrayer(id: number) {
-    const response = await fetch(`http://localhost:3001/prayers/${id}`, {
-      method: "DELETE",
-      credentials: "include",
-    });
+    try {
+      await api(`/api/prayers/${id}`, {
+        method: "DELETE",
+      });
 
-    if (response.ok) {
       await getPrayers();
+    } catch (err) {
+      console.error(err);
     }
   }
 
   async function changePrayer(id: number, content: string) {
     try {
-      const response = await fetch(`http://localhost:3001/prayers/${id}`, {
+      await api(`/api/prayers/${id}`, {
         method: "PATCH",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
         body: JSON.stringify({ content }),
       });
-
-      if (!response.ok) {
-        console.error("Failed to update prayer");
-        return;
-      }
 
       await getPrayers();
     } catch (err) {
