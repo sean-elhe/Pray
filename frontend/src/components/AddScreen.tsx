@@ -3,12 +3,24 @@ import "../modals/prayercard.css";
 type AddScreenProps = {
   prayerText: string;
   setPrayerText: React.Dispatch<React.SetStateAction<string>>;
+  publicPrayer: boolean;
+  setPublicPrayer: React.Dispatch<React.SetStateAction<boolean>>;
   savePrayer: () => void;
 };
 
-function AddScreen({ prayerText, setPrayerText, savePrayer }: AddScreenProps) {
-  const clear = () => {
+function AddScreen({
+  prayerText,
+  setPrayerText,
+  publicPrayer,
+  setPublicPrayer,
+  savePrayer,
+}: AddScreenProps) {
+  const handleClear = () => {
     setPrayerText("");
+  };
+
+  const handlePublic = () => {
+    setPublicPrayer((prev) => !prev);
   };
 
   return (
@@ -24,8 +36,11 @@ function AddScreen({ prayerText, setPrayerText, savePrayer }: AddScreenProps) {
           />
         </div>
         <div className="card-actions">
-          <button className="edit-cancel" onClick={clear}>
+          <button className="edit-cancel" onClick={handleClear}>
             Clear
+          </button>
+          <button className="edit-public" onClick={handlePublic}>
+            {publicPrayer ? "Private" : "Public"}
           </button>
           <button className="edit-save" onClick={savePrayer}>
             Save

@@ -10,12 +10,16 @@ type SavedScreenProps = {
   prayers: Prayer[];
   deletePrayer: (id: number) => void;
   changePrayer: (id: number, content: string) => void;
+  publicPrayer: boolean;
+  setPublicPrayer: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export default function SavedScreen({
   prayers,
   deletePrayer,
   changePrayer,
+  publicPrayer,
+  setPublicPrayer,
 }: SavedScreenProps) {
   const { currentPrayer, currentIndex, direction, next, previous } =
     usePrayerNavigation(prayers);
@@ -83,6 +87,8 @@ export default function SavedScreen({
           direction={direction}
           onLongPress={openMenu}
           editing={editingId === currentPrayer.id}
+          publicPrayer={publicPrayer}
+          setPublicPrayer={setPublicPrayer}
           onSaveEdit={(content) => {
             changePrayer(currentPrayer.id, content);
             setEditingId(null);

@@ -4,4 +4,5 @@ export type Prayer = {
   is_answered: boolean;
   created_at: string;
   name: string;
+  is_public: boolean;
 };

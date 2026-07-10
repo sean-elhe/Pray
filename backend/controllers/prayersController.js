@@ -38,6 +38,7 @@ export const getPublicPrayers = async (req, res) => {
         users.name
       FROM prayers
       JOIN users ON prayers.user_id = users.id
+      WHERE prayers.is_public = true
       ORDER BY prayers.created_at DESC;
     `);
 
@@ -50,7 +51,7 @@ export const getPublicPrayers = async (req, res) => {
 
 export const createPrayer = async (req, res) => {
   try {
-    const { content } = req.body;
+    const { content, is_public = false } = req.body;
 
     if (!content) {
       return res.status(400).json({ error: "Missing content" });
@@ -60,11 +61,11 @@ export const createPrayer = async (req, res) => {
 
     const insertResult = await pool.query(
       `
-      INSERT INTO prayers (content, user_id)
-      VALUES ($1, $2)
+      INSERT INTO prayers (content, user_id, is_public)
+      VALUES ($1, $2, $3)
       RETURNING id;
       `,
-      [content, user_id],
+      [content, user_id, is_public],
     );
 
     const prayerId = insertResult.rows[0].id;
@@ -76,6 +77,7 @@ export const createPrayer = async (req, res) => {
         prayers.content,
         prayers.is_answered,
         prayers.created_at,
+        prayers.is_public,
         users.name
       FROM prayers
       JOIN users
@@ -118,18 +120,19 @@ export const updatePrayer = async (req, res) => {
     const userId = req.user.id;
 
     const { id } = req.params;
-    const { content, is_answered } = req.body;
+    const { content, is_answered, is_public } = req.body;
 
     const result = await pool.query(
       `
       UPDATE prayers
       SET
         content = COALESCE($1, content),
-        is_answered = COALESCE($2, is_answered)
-      WHERE id = $3 AND user_id = $4
+        is_answered = COALESCE($2, is_answered),
+        is_public = COALESCE ($3, is_public)
+      WHERE id = $4 AND user_id = $5
       RETURNING *;
       `,
-      [content, is_answered, id, userId],
+      [content, is_answered, is_public, id, userId],
     );
 
     if (result.rows.length === 0) {

@@ -101,8 +101,15 @@
 
 .edit-cancel {
   background-color: #ed4337;
+  color: white;
+}
+
+.edit-public {
+  background-color: blue;
+  color: white;
 }
 
 .edit-save {
   background-color: #00a36c;
+  color: white;
 }

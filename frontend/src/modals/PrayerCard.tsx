@@ -1,7 +1,7 @@
 import "./prayercard.css";
 import type { Prayer } from "../types";
 import { motion } from "framer-motion";
-import { useRef } from "react";
+import { useRef, type SetStateAction } from "react";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 
@@ -12,6 +12,8 @@ type PrayerCardProps = {
   onLongPress: () => void;
   direction: number;
   editing: boolean;
+  publicPrayer: boolean;
+  setPublicPrayer: React.Dispatch<SetStateAction<boolean>>;
   onSaveEdit: (content: string) => void;
   onCancelEdit: () => void;
 };
@@ -23,6 +25,8 @@ export default function PrayerCard({
   onLongPress,
   direction,
   editing,
+  publicPrayer,
+  setPublicPrayer,
   onSaveEdit,
   onCancelEdit,
 }: PrayerCardProps) {
@@ -85,6 +89,14 @@ export default function PrayerCard({
       onPrevious();
     } else if (x > rect.width * (1 - EDGE_PERCENT)) {
       onNext();
+    }
+  };
+
+  const handlePublic = () => {
+    if (publicPrayer === false) {
+      setPublicPrayer(true);
+    } else {
+      setPublicPrayer(false);
     }
   };
 
@@ -153,10 +165,13 @@ export default function PrayerCard({
       {editing && (
         <div className="card-actions">
           <button className="edit-cancel" onClick={onCancelEdit}>
-            Cancel
+            X
+          </button>
+          <button className="edit-public" onClick={handlePublic}>
+            {publicPrayer === false ? "🌐" : "🔒"}
           </button>
           <button className="edit-save" onClick={() => onSaveEdit(text)}>
-            Save
+            ✓
           </button>
         </div>
       )}

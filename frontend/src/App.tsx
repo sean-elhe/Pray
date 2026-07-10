@@ -22,6 +22,7 @@ function App() {
   const { showToast } = useToast();
   const [screen, setScreen] = useState<Screen>("home");
   const [prayerText, setPrayerText] = useState("");
+  const [publicPrayer, setPublicPrayer] = useState(false);
   const [prayers, setPrayers] = useState<Prayer[]>([]);
   const [showLogin, setShowLogin] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
@@ -34,11 +35,13 @@ function App() {
       method: "POST",
       body: JSON.stringify({
         content: prayerText,
+        is_public: publicPrayer,
       }),
     });
 
     await getPrayers();
     setPrayerText("");
+    setPublicPrayer(false);
     showToast("Card saved");
   }
 
@@ -68,7 +71,10 @@ function App() {
     try {
       await api(`/api/prayers/${id}`, {
         method: "PATCH",
-        body: JSON.stringify({ content }),
+        body: JSON.stringify({
+          content: content,
+          is_public: publicPrayer,
+        }),
       });
 
       await getPrayers();
@@ -110,6 +116,8 @@ function App() {
         <AddScreen
           prayerText={prayerText}
           setPrayerText={setPrayerText}
+          publicPrayer={publicPrayer}
+          setPublicPrayer={setPublicPrayer}
           savePrayer={savePrayer}
         />
       ) : screen === `home` ? (
@@ -124,6 +132,8 @@ function App() {
           prayers={prayers}
           deletePrayer={deletePrayer}
           changePrayer={changePrayer}
+          publicPrayer={publicPrayer}
+          setPublicPrayer={setPublicPrayer}
         />
       ) : (
         <PublicScreen prayers={prayers} />

@@ -10,7 +10,8 @@ CREATE TABLE prayers (
     user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     content TEXT NOT NULL,
     is_answered BOOLEAN DEFAULT FALSE,
-    created_at TIMESTAMP DEFAULT NOW()
+    created_at TIMESTAMP DEFAULT NOW(),
+    is_public BOOLEAN DEFAULT FALSE
 );
 
 CREATE TABLE shared_prayers (
