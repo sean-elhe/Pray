@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useToast } from "../context/ToastContext";
 import type { Prayer } from "../types";
 
@@ -30,6 +30,12 @@ export function usePrayerNavigation(prayers: Prayer[]) {
   };
 
   const currentPrayer = prayers[currentIndex];
+
+  useEffect(() => {
+    if (currentIndex >= prayers.length) {
+      setCurrentIndex(Math.max(0, prayers.length - 1));
+    }
+  }, [prayers.length, currentIndex]);
 
   return {
     currentPrayer,

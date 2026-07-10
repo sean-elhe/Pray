@@ -140,10 +140,12 @@ main {
 /* THEMES (slightly softened for premium feel) */
 .sage {
   background: linear-gradient(135deg, var(--sage1), var(--sage2));
+  color: white;
 }
 
 .sand {
   background: linear-gradient(135deg, var(--sand1), var(--sand2));
+  color: white;
 }
 
 .slate {

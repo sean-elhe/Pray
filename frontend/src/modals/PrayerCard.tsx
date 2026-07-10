@@ -1,59 +1,46 @@
 import "./prayercard.css";
-import type { Prayer } from "../types";
 import { motion } from "framer-motion";
-import { useRef, type SetStateAction } from "react";
 import dayjs from "dayjs";
-import { useEffect, useState } from "react";
+import { useRef, useState, type SetStateAction } from "react";
+import type { Prayer } from "../types";
 
 type PrayerCardProps = {
   prayer: Prayer;
   onNext: () => void;
   onPrevious: () => void;
-  onLongPress: () => void;
+  onDoubleTap: () => void;
   direction: number;
   editing: boolean;
   publicPrayer: boolean;
   setPublicPrayer: React.Dispatch<SetStateAction<boolean>>;
   onSaveEdit: (content: string) => void;
   onCancelEdit: () => void;
-  savedScreen: boolean;
+  isSavedScreen: boolean;
 };
 
 export default function PrayerCard({
   prayer,
   onNext,
   onPrevious,
-  onLongPress,
+  onDoubleTap,
   direction,
   editing,
   publicPrayer,
   setPublicPrayer,
   onSaveEdit,
   onCancelEdit,
-  savedScreen,
+  isSavedScreen,
 }: PrayerCardProps) {
-  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
-
   const startX = useRef(0);
   const startY = useRef(0);
   const wasDragging = useRef(false);
-  const longPressed = useRef(false);
+  const lastTap = useRef(0);
 
-  const startPress = () => {
-    longPressed.current = false;
+  const [text, setText] = useState(prayer.content);
 
-    timer.current = setTimeout(() => {
-      longPressed.current = true;
-      onLongPress();
-    }, 600);
-  };
-
-  const endPress = () => {
-    if (timer.current) {
-      clearTimeout(timer.current);
-      timer.current = null;
-    }
-  };
+  const formattedDate = dayjs(prayer.created_at).format(
+    "MMMM D, YYYY - h:mm a",
+  );
 
   const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     if (editing) return;
@@ -61,26 +48,19 @@ export default function PrayerCard({
     startX.current = e.clientX;
     startY.current = e.clientY;
     wasDragging.current = false;
-
-    startPress();
   };
 
   const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
-    const dx = Math.abs(e.clientX - startX.current);
-    const dy = Math.abs(e.clientY - startY.current);
+    const movedX = Math.abs(e.clientX - startX.current);
+    const movedY = Math.abs(e.clientY - startY.current);
 
-    if (dx > 10 || dy > 10) {
+    if (movedX > 10 || movedY > 10) {
       wasDragging.current = true;
-      endPress();
     }
   };
 
   const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
-    endPress();
-
-    if (editing) return;
-    if (wasDragging.current) return;
-    if (longPressed.current) return;
+    if (editing || wasDragging.current) return;
 
     const rect = e.currentTarget.getBoundingClientRect();
     const x = e.clientX - rect.left;
@@ -94,21 +74,19 @@ export default function PrayerCard({
     }
   };
 
-  const handlePublic = () => {
-    if (publicPrayer === false) {
-      setPublicPrayer(true);
-    } else {
-      setPublicPrayer(false);
+  const handleClick = () => {
+    const now = Date.now();
+
+    if (now - lastTap.current < 300) {
+      onDoubleTap();
     }
+
+    lastTap.current = now;
   };
 
-  const formatted = dayjs(prayer.created_at).format("MMMM D, YYYY - h:mm a");
-
-  const [text, setText] = useState(prayer.content);
-
-  useEffect(() => {
-    setText(prayer.content);
-  }, [prayer]);
+  const togglePublic = () => {
+    setPublicPrayer((current) => !current);
+  };
 
   return (
     <div className="main">
@@ -117,7 +95,7 @@ export default function PrayerCard({
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
-        onPointerLeave={endPress}
+        onClick={handleClick}
         initial={{
           opacity: 0,
           x: direction > 0 ? 150 : -150,
@@ -140,27 +118,23 @@ export default function PrayerCard({
         onDragEnd={(_, info) => {
           if (info.offset.x < -100) {
             onNext();
-          }
-
-          if (info.offset.x > 100) {
+          } else if (info.offset.x > 100) {
             onPrevious();
           }
         }}
       >
         {editing ? (
-          <>
-            <textarea
-              className="prayer-edit"
-              value={text}
-              onChange={(e) => setText(e.target.value)}
-            />
-          </>
+          <textarea
+            className="prayer-edit"
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+          />
         ) : (
           <p className="prayer-body">{prayer.content}</p>
         )}
 
         <small className="prayer-name">
-          {savedScreen === false ? "By " + prayer.name : formatted}
+          {isSavedScreen ? formattedDate : `By ${prayer.name}`}
         </small>
 
         {prayer.is_answered && <p className="answered">✅ Answered</p>}
@@ -171,9 +145,11 @@ export default function PrayerCard({
           <button className="edit-cancel" onClick={onCancelEdit}>
             X
           </button>
-          <button className="edit-public" onClick={handlePublic}>
-            {publicPrayer === false ? "🌐" : "🔒"}
+
+          <button className="edit-public" onClick={togglePublic}>
+            {publicPrayer ? "🔒" : "🌐"}
           </button>
+
           <button className="edit-save" onClick={() => onSaveEdit(text)}>
             ✓
           </button>

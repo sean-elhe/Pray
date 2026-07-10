@@ -102,7 +102,7 @@ export default function SavedScreen({
           onNext={next}
           onPrevious={previous}
           direction={direction}
-          onLongPress={openMenu}
+          onDoubleTap={openMenu}
           editing={editingId === currentPrayer.id}
           publicPrayer={publicPrayer}
           setPublicPrayer={setPublicPrayer}
@@ -112,7 +112,7 @@ export default function SavedScreen({
             showToast("Card updated");
           }}
           onCancelEdit={() => setEditingId(null)}
-          savedScreen={true}
+          isSavedScreen={true}
         />
       </main>
 

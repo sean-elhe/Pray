@@ -201,3 +201,13 @@ h2 {
 .switch-mode:hover span {
   text-decoration: underline;
 }
+
+.unread {
+  margin-top: 12px;
+  padding: 4px;
+}
+
+.message {
+  margin-top: 12px;
+  padding: 4px;
+}

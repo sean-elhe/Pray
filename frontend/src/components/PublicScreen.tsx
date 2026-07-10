@@ -39,11 +39,11 @@ export default function PublicScreen({ prayers }: PublicScreenProps) {
           direction={direction}
           editing={false}
           publicPrayer={false}
-          savedScreen={false}
+          isSavedScreen={false}
           setPublicPrayer={() => {}}
           onCancelEdit={() => {}}
           onSaveEdit={() => {}}
-          onLongPress={() => {}}
+          onDoubleTap={() => {}}
         />
       </main>
 
