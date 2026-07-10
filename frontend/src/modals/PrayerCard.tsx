@@ -16,6 +16,7 @@ type PrayerCardProps = {
   setPublicPrayer: React.Dispatch<SetStateAction<boolean>>;
   onSaveEdit: (content: string) => void;
   onCancelEdit: () => void;
+  savedScreen: boolean;
 };
 
 export default function PrayerCard({
@@ -29,6 +30,7 @@ export default function PrayerCard({
   setPublicPrayer,
   onSaveEdit,
   onCancelEdit,
+  savedScreen,
 }: PrayerCardProps) {
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -157,7 +159,9 @@ export default function PrayerCard({
           <p className="prayer-body">{prayer.content}</p>
         )}
 
-        <small className="prayer-date">{formatted}</small>
+        <small className="prayer-name">
+          {savedScreen === false ? "By " + prayer.name : formatted}
+        </small>
 
         {prayer.is_answered && <p className="answered">✅ Answered</p>}
       </motion.div>

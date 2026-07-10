@@ -95,6 +95,7 @@ export default function SavedScreen({
             showToast("Card updated");
           }}
           onCancelEdit={() => setEditingId(null)}
+          savedScreen={true}
         />
       </main>
 
