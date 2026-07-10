@@ -1,20 +1,32 @@
 import { useState } from "react";
+import { useToast } from "../context/ToastContext";
 import type { Prayer } from "../types";
 
 export function usePrayerNavigation(prayers: Prayer[]) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState(1);
+  const { showToast } = useToast();
 
   const next = () => {
-    setDirection(1);
+    if (prayers.length === 0) return;
 
-    setCurrentIndex((i) => Math.min(i + 1, prayers.length - 1));
+    setDirection(1);
+    setCurrentIndex((i) => {
+      const nextIndex = (i + 1) % prayers.length;
+
+      if (nextIndex === 0) {
+        showToast("All prayers completed");
+      }
+
+      return nextIndex;
+    });
   };
 
   const previous = () => {
-    setDirection(-1);
+    if (prayers.length === 0) return;
 
-    setCurrentIndex((i) => Math.max(i - 1, 0));
+    setDirection(-1);
+    setCurrentIndex((i) => (i - 1 + prayers.length) % prayers.length);
   };
 
   const currentPrayer = prayers[currentIndex];

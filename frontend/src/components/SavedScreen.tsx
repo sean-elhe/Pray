@@ -28,6 +28,8 @@ export default function SavedScreen({
   const [menuOpen, setMenuOpen] = useState(false);
 
   const [editingId, setEditingId] = useState<number | null>(null);
+  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const { showToast } = useToast();
 
   if (prayers.length === 0) {
@@ -46,6 +48,7 @@ export default function SavedScreen({
 
   const openMenu = () => {
     setSelectedPrayer(currentPrayer);
+    setConfirmDeleteOpen(false);
     setMenuOpen(true);
   };
 
@@ -61,15 +64,29 @@ export default function SavedScreen({
     }
   };
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (!selectedPrayer) return;
 
-    deletePrayer(selectedPrayer.id);
+    setIsDeleting(true);
 
-    setSelectedPrayer(null);
+    try {
+      await deletePrayer(selectedPrayer.id);
+
+      setConfirmDeleteOpen(false);
+      setSelectedPrayer(null);
+
+      showToast("Card deleted");
+    } catch (error) {
+      console.log(error);
+      showToast("Failed to delete card");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  const openDeleteMenu = () => {
+    setConfirmDeleteOpen(true);
     setMenuOpen(false);
-
-    showToast("Card deleted");
   };
 
   return (
@@ -107,8 +124,35 @@ export default function SavedScreen({
         open={menuOpen}
         onClose={closeMenu}
         onEdit={openEditor}
-        onDelete={handleDelete}
+        onDelete={openDeleteMenu}
       />
+
+      {confirmDeleteOpen && (
+        <div
+          className="menu-overlay"
+          onClick={() => setConfirmDeleteOpen(false)}
+        >
+          <div className="delete-menu" onClick={(e) => e.stopPropagation()}>
+            <h3>Delete prayer?</h3>
+
+            <p>This prayer will be permanently removed.</p>
+
+            <div className="confirm-actions">
+              <button onClick={openMenu} disabled={isDeleting}>
+                Cancel
+              </button>
+
+              <button
+                className="delete-button"
+                onClick={handleDelete}
+                disabled={isDeleting}
+              >
+                {isDeleting ? "Deleting..." : "Delete"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }

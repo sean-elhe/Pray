@@ -65,6 +65,45 @@
   background: transparent;
 }
 
+.delete-menu {
+  width: min(90%, 360px);
+
+  background: white;
+
+  border-radius: 24px;
+
+  padding: 24px;
+
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  animation: scaleIn 0.15s ease;
+}
+
+.confirm-modal {
+  width: min(90%, 350px);
+  padding: 24px;
+  border-radius: 16px;
+  background: white;
+
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.confirm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.delete-button {
+  color: white;
+  background: #ed4337;
+}
+
 /* Animations */
 
 @keyframes fadeIn {
