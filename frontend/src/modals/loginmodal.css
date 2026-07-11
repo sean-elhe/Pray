@@ -202,6 +202,10 @@ h2 {
   text-decoration: underline;
 }
 
+.header {
+  padding: 12px;
+}
+
 .unread {
   margin-top: 12px;
   padding: 4px;
@@ -210,4 +214,69 @@ h2 {
 .message {
   margin-top: 12px;
   padding: 4px;
+}
+
+.notifications {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+
+  margin: 1rem 0;
+
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.notification {
+  padding: 0.9rem 1rem;
+
+  border-radius: 12px;
+  border: 1px solid #e8e8e8;
+
+  background: white;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s,
+    border-color 0.2s,
+    transform 0.15s;
+}
+
+.notification:hover {
+  background: #f8f8f8;
+  border-color: #d6d6d6;
+}
+
+.notification:active {
+  transform: scale(0.98);
+}
+
+.notification.unread {
+  background: #f5f9ff;
+  border-left: 4px solid #4a90e2;
+}
+
+.notification.unread:hover {
+  background: #edf5ff;
+}
+
+.notification p {
+  margin: 0;
+  line-height: 1.4;
+  color: #333;
+}
+
+.notification small {
+  display: block;
+  margin-top: 0.5rem;
+
+  color: #888;
+  font-size: 0.8rem;
+}
+
+.empty-notifications {
+  text-align: center;
+  color: #888;
+  padding: 2rem 0;
 }

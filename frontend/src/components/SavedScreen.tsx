@@ -3,7 +3,7 @@ import { useState } from "react";
 import type { Prayer } from "../types";
 import PrayerCard from "../modals/PrayerCard";
 import PrayerMenu from "../modals/prayermenu";
-import { usePrayerNavigation } from "../hooks/navigation";
+import { usePrayerNavigation } from "../hooks/usePrayerNavigation";
 import { useToast } from "../context/ToastContext";
 
 type SavedScreenProps = {

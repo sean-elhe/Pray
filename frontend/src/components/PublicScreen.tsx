@@ -1,6 +1,6 @@
 import type { Prayer } from "../types";
 import PrayerCard from "../modals/PrayerCard";
-import { usePrayerNavigation } from "../hooks/navigation";
+import { usePrayerNavigation } from "../hooks/usePrayerNavigation";
 
 type PublicScreenProps = {
   prayers: Prayer[];

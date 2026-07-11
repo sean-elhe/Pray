@@ -25,23 +25,37 @@ export default function ProfileModal({ close }: ProfileModalProps) {
         <button className="close-btn" onClick={close}>
           X
         </button>
-        <h3>You are logged in! </h3>
+        <h3 className="header">You are logged in! </h3>
+        <hr />
 
         <div>
-          <h4 className="unread">Unread: {unreadCount}</h4>
+          <h3 className="unread">Notifications</h3>
+          {unreadCount > 0 && (
+            <span className="notification-count">{unreadCount} unread</span>
+          )}
 
-          {notifications.map((notification) => (
-            <div key={notification.id}>
-              <p className="message">{notification.message}</p>
+          <div className="notifications">
+            {notifications.map((notification) => (
+              <div
+                key={notification.id}
+                className={`notification ${notification.is_read ? "" : "unread"}`}
+                onClick={() => {
+                  if (!notification.is_read) {
+                    markRead(notification.id);
+                  }
+                }}
+              >
+                <p>{notification.message}</p>
 
-              {!notification.is_read && (
-                <button onClick={() => markRead(notification.id)}>
-                  Mark read
-                </button>
-              )}
-            </div>
-          ))}
+                <small>
+                  {new Date(notification.created_at).toLocaleString()}
+                </small>
+              </div>
+            ))}
+          </div>
         </div>
+
+        <hr />
 
         <button className="logout-btn" onClick={handleLogout}>
           Log out
