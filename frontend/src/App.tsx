@@ -42,7 +42,7 @@ function App() {
     await getPrayers();
     setPrayerText("");
     setPublicPrayer(false);
-    // showToast("Card saved");
+    showToast("Card saved");
   }
 
   async function getPrayers() {

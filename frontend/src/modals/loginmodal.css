@@ -311,3 +311,24 @@ h2 {
   border-radius: 50%;
   background: #4a90e2;
 }
+
+.notifications-btn {
+  width: 100%;
+  margin-top: 1rem;
+
+  padding: 0.75rem 1rem;
+
+  border: none;
+  border-radius: 10px;
+
+  background: #f0f7ff;
+  color: #2563eb;
+
+  cursor: pointer;
+
+  font-weight: 600;
+}
+
+.notifications-btn:hover {
+  background: #e2efff;
+}

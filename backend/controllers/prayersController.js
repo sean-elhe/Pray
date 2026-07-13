@@ -1,5 +1,6 @@
 import pool from "../db.js";
 import { createNotification } from "../utils/createNotification.js";
+import { sendPushNotifications } from "../utils/sendPushNotifications.js";
 import { notifyUser } from "../socket.js";
 
 export const getPrayers = async (req, res) => {
@@ -95,6 +96,8 @@ export const createPrayer = async (req, res) => {
     );
 
     notifyUser(user_id, notification);
+
+    await sendPushNotifications(user_id, notification);
 
     res.status(201).json(prayer.rows[0]);
   } catch (err) {

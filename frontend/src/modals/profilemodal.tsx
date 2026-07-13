@@ -2,6 +2,8 @@ import "./loginmodal.css";
 import { useAuth } from "../auth/useAuth";
 import { useToast } from "../context/ToastContext";
 import { useNotifications } from "../hooks/useNotifications";
+import { enablePushNotifications } from "../push";
+import { formatRelativeTime } from "../utils/formatRelativeTime";
 
 type ProfileModalProps = {
   close: () => void;
@@ -12,6 +14,16 @@ export default function ProfileModal({ close }: ProfileModalProps) {
 
   const { logout } = useAuth();
   const { showToast } = useToast();
+
+  async function handleEnableNotifications() {
+    try {
+      await enablePushNotifications();
+      showToast("Notifications enabled");
+    } catch (err) {
+      console.error(err);
+      showToast("Could not enable notifications");
+    }
+  }
 
   async function handleLogout() {
     await logout();
@@ -52,9 +64,7 @@ export default function ProfileModal({ close }: ProfileModalProps) {
                 >
                   <p>{notification.message}</p>
 
-                  <small>
-                    {new Date(notification.created_at).toLocaleString()}
-                  </small>
+                  <small>{formatRelativeTime(notification.created_at)}</small>
                 </div>
               ))
             )}
@@ -62,6 +72,12 @@ export default function ProfileModal({ close }: ProfileModalProps) {
         </div>
 
         <hr />
+        <button
+          className="notifications-btn"
+          onClick={handleEnableNotifications}
+        >
+          Enable notifications
+        </button>
 
         <button className="logout-btn" onClick={handleLogout}>
           Log out
