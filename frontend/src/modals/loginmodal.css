@@ -229,6 +229,7 @@ h2 {
 
 .notification {
   padding: 0.9rem 1rem;
+  position: relative;
 
   border-radius: 12px;
   border: 1px solid #e8e8e8;
@@ -241,6 +242,21 @@ h2 {
     background-color 0.2s,
     border-color 0.2s,
     transform 0.15s;
+}
+
+.notification.unread::before {
+  content: "";
+
+  position: absolute;
+
+  left: 12px;
+  top: 18px;
+
+  width: 8px;
+  height: 8px;
+
+  border-radius: 50%;
+  background: #4a90e2;
 }
 
 .notification:hover {
@@ -279,4 +295,19 @@ h2 {
   text-align: center;
   color: #888;
   padding: 2rem 0;
+}
+
+.notification.unread::before {
+  content: "";
+
+  position: absolute;
+
+  left: 12px;
+  top: 18px;
+
+  width: 8px;
+  height: 8px;
+
+  border-radius: 50%;
+  background: #4a90e2;
 }

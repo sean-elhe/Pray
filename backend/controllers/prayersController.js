@@ -1,4 +1,6 @@
 import pool from "../db.js";
+import { createNotification } from "../utils/createNotification.js";
+import { notifyUser } from "../socket.js";
 
 export const getPrayers = async (req, res) => {
   try {
@@ -86,6 +88,13 @@ export const createPrayer = async (req, res) => {
       `,
       [prayerId],
     );
+
+    const notification = await createNotification(
+      user_id,
+      "Your prayer was created",
+    );
+
+    notifyUser(user_id, notification);
 
     res.status(201).json(prayer.rows[0]);
   } catch (err) {

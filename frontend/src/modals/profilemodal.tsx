@@ -35,23 +35,29 @@ export default function ProfileModal({ close }: ProfileModalProps) {
           )}
 
           <div className="notifications">
-            {notifications.map((notification) => (
-              <div
-                key={notification.id}
-                className={`notification ${notification.is_read ? "" : "unread"}`}
-                onClick={() => {
-                  if (!notification.is_read) {
-                    markRead(notification.id);
-                  }
-                }}
-              >
-                <p>{notification.message}</p>
+            {notifications.length === 0 ? (
+              <p className="empty-notifications">You're all caught up! 🎉</p>
+            ) : (
+              notifications.map((notification) => (
+                <div
+                  key={notification.id}
+                  className={`notification ${
+                    notification.is_read ? "" : "unread"
+                  }`}
+                  onClick={() => {
+                    if (!notification.is_read) {
+                      markRead(notification.id);
+                    }
+                  }}
+                >
+                  <p>{notification.message}</p>
 
-                <small>
-                  {new Date(notification.created_at).toLocaleString()}
-                </small>
-              </div>
-            ))}
+                  <small>
+                    {new Date(notification.created_at).toLocaleString()}
+                  </small>
+                </div>
+              ))
+            )}
           </div>
         </div>
 
