@@ -2,10 +2,15 @@ import "./homescreen.css";
 
 type HomeScreenProps = {
   goToPublic: () => void;
+  goToShared: () => void;
   goToSaved: () => void;
 };
 
-export default function HomeScreen({ goToPublic, goToSaved }: HomeScreenProps) {
+export default function HomeScreen({
+  goToPublic,
+  goToShared,
+  goToSaved,
+}: HomeScreenProps) {
   return (
     <>
       <div className="background-glow" />
@@ -19,7 +24,7 @@ export default function HomeScreen({ goToPublic, goToSaved }: HomeScreenProps) {
           <h2>Public</h2>
         </button>
 
-        <button className="card sand">
+        <button onClick={goToShared} className="card sand">
           <h2>Shared</h2>
         </button>
 

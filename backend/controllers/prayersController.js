@@ -31,6 +31,37 @@ export const getPrayers = async (req, res) => {
   }
 };
 
+export const getSharedPrayers = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const result = await pool.query(
+      `
+      SELECT
+      prayers.id,
+      prayers.content,
+      prayers.is_answered,
+      prayers.created_at,
+      prayers.is_public,
+      users.name
+      FROM prayers
+      JOIN users
+      ON prayers.user_id = users.id
+      JOIN prayer_shares
+      ON prayers.id = prayer_shares.prayer_id
+      WHERE prayer_shares.shared_with_user_id = $1
+      ORDER BY prayers.created_at DESC;
+      `,
+      [userId],
+    );
+
+    return res.json(result.rows);
+  } catch (err) {
+    console.error("GET /prayers/shared error:", err.message);
+    res.status(500).json({ error: err.message });
+  }
+};
+
 export const getPublicPrayers = async (req, res) => {
   try {
     const result = await pool.query(`

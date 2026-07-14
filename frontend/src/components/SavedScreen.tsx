@@ -10,7 +10,7 @@ import ShareModal from "../modals/ShareModal";
 type SavedScreenProps = {
   prayers: Prayer[];
   deletePrayer: (id: number) => void;
-  changePrayer: (id: number, content: string) => void;
+  changePrayer: (id: number, content: string, is_public: boolean) => void;
   publicPrayer: boolean;
   setPublicPrayer: React.Dispatch<React.SetStateAction<boolean>>;
 };

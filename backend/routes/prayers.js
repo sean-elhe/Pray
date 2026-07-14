@@ -5,12 +5,14 @@ import {
   createPrayer,
   updatePrayer,
   deletePrayer,
+  getSharedPrayers,
 } from "../controllers/prayersController.js";
 
 import { auth } from "../middleware/auth.js";
 
 const router = express.Router();
 
+router.get("/shared", auth, getSharedPrayers);
 router.get("/", auth, getPrayers);
 router.post("/", auth, createPrayer);
 router.patch("/:id", auth, updatePrayer);

@@ -14,8 +14,9 @@ import { NavBar } from "./modals/navbar";
 import { useAuth } from "./auth/useAuth";
 import type { Prayer } from "./types";
 import ProfileModal from "./profile/ProfileModal";
+import SharedScreen from "./components/SharedScreen";
 
-type Screen = "add" | "saved" | "public" | "home";
+type Screen = "add" | "saved" | "shared" | "public" | "home";
 
 function App() {
   const { user } = useAuth();
@@ -29,6 +30,10 @@ function App() {
   const [modal, setModal] = useState<"login" | "settings" | "profile" | null>(
     null,
   );
+
+  const [savedPrayers, setSavedPrayers] = useState<Prayer[]>([]);
+  const [sharedPrayers, setSharedPrayers] = useState<Prayer[]>([]);
+  const [publicPrayers, setPublicPrayers] = useState<Prayer[]>([]);
 
   async function savePrayer() {
     await api("/api/prayers", {
@@ -47,12 +52,17 @@ function App() {
 
   async function getPrayers() {
     const data = await api("/api/prayers");
-    setPrayers(data);
+    setSavedPrayers(data);
+  }
+
+  async function getSharedPrayers() {
+    const data = await api("/api/prayers/shared");
+    setSharedPrayers(data);
   }
 
   async function getPublicPrayers() {
     const data = await api("/api/prayers/public");
-    setPrayers(data);
+    setPublicPrayers(data);
   }
 
   async function deletePrayer(id: number) {
@@ -67,13 +77,13 @@ function App() {
     }
   }
 
-  async function changePrayer(id: number, content: string) {
+  async function changePrayer(id: number, content: string, is_public: boolean) {
     try {
       await api(`/api/prayers/${id}`, {
         method: "PATCH",
         body: JSON.stringify({
-          content: content,
-          is_public: publicPrayer,
+          content,
+          is_public,
         }),
       });
 
@@ -86,6 +96,10 @@ function App() {
   useEffect(() => {
     if (screen === "saved") {
       getPrayers();
+    }
+
+    if (screen === "shared") {
+      getSharedPrayers();
     }
 
     if (screen === "public") {
@@ -123,20 +137,25 @@ function App() {
       ) : screen === `home` ? (
         <HomeScreen
           goToPublic={() => setScreen(`public`)}
+          goToShared={
+            !user ? () => setShowLogin(true) : () => setScreen(`shared`)
+          }
           goToSaved={
             !user ? () => setShowLogin(true) : () => setScreen(`saved`)
           }
         />
       ) : screen === `saved` ? (
         <SavedScreen
-          prayers={prayers}
+          prayers={savedPrayers}
           deletePrayer={deletePrayer}
           changePrayer={changePrayer}
           publicPrayer={publicPrayer}
           setPublicPrayer={setPublicPrayer}
         />
+      ) : screen === `shared` ? (
+        <SharedScreen prayers={sharedPrayers} />
       ) : (
-        <PublicScreen prayers={prayers} />
+        <PublicScreen prayers={publicPrayers} />
       )}
     </div>
   );
