@@ -5,10 +5,6 @@ import {
   createPrayer,
   updatePrayer,
   deletePrayer,
-  createShareLink,
-  updateVisibility,
-  searchUsers,
-  sharePrayer,
 } from "../controllers/prayersController.js";
 
 import { auth } from "../middleware/auth.js";
