@@ -2,9 +2,10 @@ import "../modals/prayercard.css";
 import { useState } from "react";
 import type { Prayer } from "../types";
 import PrayerCard from "../modals/PrayerCard";
-import PrayerMenu from "../modals/prayermenu";
+import PrayerMenu from "../modals/PrayerMenu";
 import { usePrayerNavigation } from "../hooks/usePrayerNavigation";
 import { useToast } from "../context/ToastContext";
+import ShareModal from "../modals/ShareModal";
 
 type SavedScreenProps = {
   prayers: Prayer[];
@@ -29,6 +30,7 @@ export default function SavedScreen({
 
   const [editingId, setEditingId] = useState<number | null>(null);
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const { showToast } = useToast();
 
@@ -56,7 +58,7 @@ export default function SavedScreen({
     setMenuOpen(false);
   };
 
-  const openEditor = () => {
+  const openEditMenu = () => {
     setMenuOpen(false);
 
     if (selectedPrayer) {
@@ -87,6 +89,11 @@ export default function SavedScreen({
   const openDeleteMenu = () => {
     setConfirmDeleteOpen(true);
     setMenuOpen(false);
+  };
+
+  const openShareMenu = () => {
+    setMenuOpen(false);
+    setShareOpen(true);
   };
 
   return (
@@ -123,8 +130,15 @@ export default function SavedScreen({
       <PrayerMenu
         open={menuOpen}
         onClose={closeMenu}
-        onEdit={openEditor}
+        onEdit={openEditMenu}
         onDelete={openDeleteMenu}
+        onShare={openShareMenu}
+      />
+
+      <ShareModal
+        isOpen={shareOpen}
+        onClose={() => setShareOpen(false)}
+        prayer={currentPrayer}
       />
 
       {confirmDeleteOpen && (

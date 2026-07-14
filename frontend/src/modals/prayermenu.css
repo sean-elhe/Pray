@@ -65,7 +65,8 @@
   background: transparent;
 }
 
-.delete-menu {
+.delete-menu,
+.share-menu {
   width: min(90%, 360px);
 
   background: white;
@@ -102,6 +103,35 @@
 .delete-button {
   color: white;
   background: #ed4337;
+}
+
+/* Share modal */
+
+.share-overlay {
+  position: fixed;
+  inset: 0;
+
+  background: rgba(0, 0, 0, 0.35);
+
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+
+  z-index: 1000;
+}
+
+.share-menu h3 {
+  margin-bottom: 20px;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+
+  to {
+    transform: translateY(0);
+  }
 }
 
 /* Animations */

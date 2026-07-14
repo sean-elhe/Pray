@@ -11,7 +11,9 @@ CREATE TABLE prayers (
     content TEXT NOT NULL,
     is_answered BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT NOW(),
-    is_public BOOLEAN DEFAULT FALSE
+    is_public BOOLEAN DEFAULT FALSE,
+    visibility VARCHAR(20) DEFAULT 'private'
+    share_token UUID DEFAULT gen_random_uuid();
 );
 
 CREATE TABLE shared_prayers (
@@ -42,4 +44,13 @@ CREATE TABLE push_subscriptions (
   user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
   subscription JSONB NOT NULL,
   created_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE prayer_shares (
+  id SERIAL PRIMARY KEY,
+  prayer_id INTEGER REFERENCES prayers(id) ON DELETE CASCADE,
+  shared_with_user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+  created_at TIMESTAMP DEFAULT NOW(),
+
+  UNIQUE(prayer_id, shared_with_user_id)
 );

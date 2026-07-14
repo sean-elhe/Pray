@@ -5,6 +5,7 @@ type PrayerMenuProps = {
   onClose: () => void;
   onEdit: () => void;
   onDelete: () => void;
+  onShare: () => void;
 };
 
 export default function PrayerMenu({
@@ -12,6 +13,7 @@ export default function PrayerMenu({
   onClose,
   onEdit,
   onDelete,
+  onShare,
 }: PrayerMenuProps) {
   if (!open) return null;
 
@@ -25,7 +27,7 @@ export default function PrayerMenu({
         </button>
         <button onClick={onEdit}>Edit</button>
         <button onClick={onDelete}>Delete</button>
-        <button onClick={onDelete}>Share</button>
+        <button onClick={onShare}>Share</button>
       </div>
     </div>
   );

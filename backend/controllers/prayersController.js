@@ -14,6 +14,7 @@ export const getPrayers = async (req, res) => {
         prayers.content,
         prayers.is_answered,
         prayers.created_at,
+        prayers.is_public,
         users.name
       FROM prayers
       JOIN users ON prayers.user_id = users.id
@@ -38,6 +39,7 @@ export const getPublicPrayers = async (req, res) => {
         prayers.content,
         prayers.is_answered,
         prayers.created_at,
+        prayers.is_public,
         users.name
       FROM prayers
       JOIN users ON prayers.user_id = users.id
@@ -120,7 +122,10 @@ export const deletePrayer = async (req, res) => {
       return res.status(404).json({ error: "Prayer not found" });
     }
 
-    res.status(204).send();
+    res.json({
+      message: "Prayer deleted",
+      id: result.rows[0].id,
+    });
   } catch (err) {
     console.error("DELETE /prayers error:", err);
     res.status(500).json({ error: "Database error" });

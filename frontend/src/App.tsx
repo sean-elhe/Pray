@@ -13,7 +13,7 @@ import { NavBar } from "./modals/navbar";
 
 import { useAuth } from "./auth/useAuth";
 import type { Prayer } from "./types";
-import ProfileModal from "./modals/profilemodal";
+import ProfileModal from "./profile/ProfileModal";
 
 type Screen = "add" | "saved" | "public" | "home";
 
