@@ -89,9 +89,12 @@ export default function PrayerCard({
   };
 
   return (
-    <div className="main">
+    <div className="card-container">
       <motion.div
-        className="saved-card"
+        className="prayer-card"
+        style={{
+          borderColor: prayer.category_color ?? "#ddd",
+        }}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
@@ -134,8 +137,10 @@ export default function PrayerCard({
         )}
 
         <small className="prayer-name">
-          {isSavedScreen ? formattedDate : `By ${prayer.name}`}
+          {isSavedScreen ? formattedDate : `By ${prayer.user_name}`}
         </small>
+
+        {prayer.category_name && <span>{prayer.category_name}</span>}
 
         {prayer.is_answered && <p className="answered">✅ Answered</p>}
       </motion.div>

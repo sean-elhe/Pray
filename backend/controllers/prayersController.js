@@ -3,6 +3,70 @@ import { createNotification } from "../utils/createNotification.js";
 import { sendPushNotifications } from "../utils/sendPushNotifications.js";
 import { notifyUser } from "../socket.js";
 
+export const createPrayer = async (req, res) => {
+  try {
+    const { content, is_public = false, category_id = null } = req.body;
+
+    if (!content) {
+      return res.status(400).json({ error: "Missing content" });
+    }
+
+    const user_id = req.user.id;
+
+    const insertResult = await pool.query(
+      `
+      INSERT INTO prayers (
+       content,
+       user_id, 
+       is_public,
+       category_id
+      )
+      VALUES ($1, $2, $3)
+      RETURNING id;
+      `,
+      [content, user_id, is_public, category_id],
+    );
+
+    const prayerId = insertResult.rows[0].id;
+
+    const prayer = await pool.query(
+      `
+      SELECT
+        prayers.id,
+        prayers.content,
+        prayers.is_answered,
+        prayers.created_at,
+        prayers.is_public,
+        users.name AS user_name,
+        categories.id AS category_id,
+        categories.name AS category_name,
+        categories.color AS category_color
+      FROM prayers
+      JOIN users
+        ON prayers.user_id = users.id
+      LEFT JOIN categories
+        ON prayers.category_id = categories.id
+      WHERE prayers.id = $1;
+      `,
+      [prayerId],
+    );
+
+    const notification = await createNotification(
+      user_id,
+      "Your prayer was created",
+    );
+
+    notifyUser(user_id, notification);
+
+    await sendPushNotifications(user_id, notification);
+
+    res.status(201).json(prayer.rows[0]);
+  } catch (err) {
+    console.error("POST /prayers error:", err);
+    res.status(500).json({ error: "Database error" });
+  }
+};
+
 export const getPrayers = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -15,9 +79,15 @@ export const getPrayers = async (req, res) => {
         prayers.is_answered,
         prayers.created_at,
         prayers.is_public,
-        users.name
+        users.name AS user_name,
+        categories.id AS category_id,
+        categories.name AS category_name,
+        categories.color AS category_color
       FROM prayers
-      JOIN users ON prayers.user_id = users.id
+      JOIN users 
+        ON prayers.user_id = users.id
+      LEFT JOIN categories
+        ON prayers.category_id = categories.id
       WHERE prayers.user_id = $1
       ORDER BY prayers.created_at DESC;
       `,
@@ -81,60 +151,6 @@ export const getPublicPrayers = async (req, res) => {
     return res.json(result.rows);
   } catch (err) {
     console.error("GET /prayers/public error:", err);
-    res.status(500).json({ error: "Database error" });
-  }
-};
-
-export const createPrayer = async (req, res) => {
-  try {
-    const { content, is_public = false } = req.body;
-
-    if (!content) {
-      return res.status(400).json({ error: "Missing content" });
-    }
-
-    const user_id = req.user.id;
-
-    const insertResult = await pool.query(
-      `
-      INSERT INTO prayers (content, user_id, is_public)
-      VALUES ($1, $2, $3)
-      RETURNING id;
-      `,
-      [content, user_id, is_public],
-    );
-
-    const prayerId = insertResult.rows[0].id;
-
-    const prayer = await pool.query(
-      `
-      SELECT
-        prayers.id,
-        prayers.content,
-        prayers.is_answered,
-        prayers.created_at,
-        prayers.is_public,
-        users.name
-      FROM prayers
-      JOIN users
-        ON prayers.user_id = users.id
-      WHERE prayers.id = $1;
-      `,
-      [prayerId],
-    );
-
-    const notification = await createNotification(
-      user_id,
-      "Your prayer was created",
-    );
-
-    notifyUser(user_id, notification);
-
-    await sendPushNotifications(user_id, notification);
-
-    res.status(201).json(prayer.rows[0]);
-  } catch (err) {
-    console.error("POST /prayers error:", err);
     res.status(500).json({ error: "Database error" });
   }
 };

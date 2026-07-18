@@ -98,9 +98,7 @@ export default function SavedScreen({
 
   return (
     <>
-      <header>
-        <h1></h1>
-      </header>
+      <div className="background-glow" />
 
       <main>
         <PrayerCard
@@ -114,7 +112,7 @@ export default function SavedScreen({
           publicPrayer={publicPrayer}
           setPublicPrayer={setPublicPrayer}
           onSaveEdit={(content) => {
-            changePrayer(currentPrayer.id, content);
+            changePrayer(currentPrayer.id, content, currentPrayer.is_public);
             setEditingId(null);
             showToast("Card updated");
           }}
@@ -123,9 +121,11 @@ export default function SavedScreen({
         />
       </main>
 
-      <div className="counter">
-        {currentIndex + 1} / {prayers.length}
-      </div>
+      <section>
+        <div className="counter">
+          {currentIndex + 1} / {prayers.length}
+        </div>
+      </section>
 
       <PrayerMenu
         open={menuOpen}

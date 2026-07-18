@@ -11,6 +11,7 @@ import prayerRoutes from "./routes/prayers.js";
 import notificationRoutes from "./routes/notifications.js";
 import pushRoutes from "./routes/push.js";
 import networkRoutes from "./routes/network.js";
+import categoriesRoutes from "./routes/categories.js";
 
 const app = express();
 const server = http.createServer(app);
@@ -41,6 +42,7 @@ app.use("/api/prayers", prayerRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/push", pushRoutes);
 app.use("/api/network", networkRoutes);
+app.use("/api/categories", categoriesRoutes);
 
 server.listen(process.env.PORT, () => {
   console.log(`Server running on port ${process.env.PORT}`);

@@ -1,10 +1,24 @@
-import "../modals/prayercard.css";
+// import "./modals/prayercard.css";
+import { useState } from "react";
+import CategoryModal from "../modals/CategoryModal";
+import "./components.css";
+import type { Category } from "../types";
 
 type AddScreenProps = {
   prayerText: string;
   setPrayerText: React.Dispatch<React.SetStateAction<string>>;
+
   publicPrayer: boolean;
   setPublicPrayer: React.Dispatch<React.SetStateAction<boolean>>;
+
+  categories: Category[];
+  onCategoryCreated: (category: Category) => void;
+  onCategoryUpdated: (category: Category) => Promise<void>;
+  onCategoryDeleted: (id: number) => Promise<void>;
+
+  selectedCategory: Category | null;
+  setSelectedCategory: React.Dispatch<React.SetStateAction<Category | null>>;
+
   savePrayer: () => void;
 };
 
@@ -13,6 +27,12 @@ function AddScreen({
   setPrayerText,
   publicPrayer,
   setPublicPrayer,
+  categories,
+  onCategoryCreated,
+  onCategoryUpdated,
+  onCategoryDeleted,
+  selectedCategory,
+  setSelectedCategory,
   savePrayer,
 }: AddScreenProps) {
   const handleClear = () => {
@@ -22,11 +42,14 @@ function AddScreen({
   const handlePublic = () => {
     setPublicPrayer((prev) => !prev);
   };
+  const [showCategoryModal, setShowCategoryModal] = useState(false);
 
   return (
     <>
-      <div className="main">
-        <div className="saved-card">
+      <div className="background-glow" />
+
+      <main>
+        <div className="prayer-card">
           <textarea
             className="prayer-edit"
             value={prayerText}
@@ -35,18 +58,36 @@ function AddScreen({
             onChange={(e) => setPrayerText(e.target.value)}
           />
         </div>
-        <div className="card-actions">
-          <button className="edit-cancel" onClick={handleClear}>
-            Clear
-          </button>
-          <button className="edit-public" onClick={handlePublic}>
-            {publicPrayer ? "Private" : "Public"}
-          </button>
-          <button className="edit-save" onClick={savePrayer}>
-            Save
-          </button>
+      </main>
+
+      <section>
+        <div
+          className="category-picker"
+          style={{
+            borderLeft: selectedCategory
+              ? `6px solid ${selectedCategory.color}`
+              : "6px solid transparent",
+          }}
+          onClick={() => setShowCategoryModal(true)}
+        >
+          {selectedCategory?.name ?? "No Category"}
         </div>
-      </div>
+      </section>
+
+      {showCategoryModal && (
+        <CategoryModal
+          close={() => setShowCategoryModal(false)}
+          categories={categories}
+          selectedCategory={selectedCategory}
+          onSelect={(category) => {
+            setSelectedCategory(category);
+            setShowCategoryModal(false);
+          }}
+          onCreated={onCategoryCreated}
+          onUpdated={onCategoryUpdated}
+          onDeleted={onCategoryDeleted}
+        />
+      )}
     </>
   );
 }

@@ -26,9 +26,7 @@ export default function PublicScreen({ prayers }: PublicScreenProps) {
 
   return (
     <>
-      <header>
-        <h1></h1>
-      </header>
+      <div className="background-glow" />
 
       <main>
         <PrayerCard
@@ -47,9 +45,11 @@ export default function PublicScreen({ prayers }: PublicScreenProps) {
         />
       </main>
 
-      <div className="counter">
-        {currentIndex + 1} / {prayers.length}
-      </div>
+      <section>
+        <div className="counter">
+          {currentIndex + 1} / {prayers.length}
+        </div>
+      </section>
     </>
   );
 }

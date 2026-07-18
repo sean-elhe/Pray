@@ -1,0 +1,16 @@
+section {
+  display: flex;
+  width: 100%;
+  padding: 24px;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+}
+.save-btn {
+  position: relative;
+  background-color: green;
+  border-radius: 18px;
+  padding: 12px;
+  width: 85%;
+  color: white;
+}

@@ -12,8 +12,8 @@ CREATE TABLE prayers (
     is_answered BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT NOW(),
     is_public BOOLEAN DEFAULT FALSE,
-    visibility VARCHAR(20) DEFAULT 'private'
-    share_token UUID DEFAULT gen_random_uuid();
+    share_token UUID DEFAULT gen_random_uuid(),
+    category_id INTEGER REFERENCES categories(id) ON DELETE SET NULL
 );
 
 CREATE TABLE shared_prayers (
@@ -53,4 +53,14 @@ CREATE TABLE prayer_shares (
   created_at TIMESTAMP DEFAULT NOW(),
 
   UNIQUE(prayer_id, shared_with_user_id)
+);
+
+CREATE TABLE categories (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    name TEXT NOT NULL,
+    color TEXT NOT NULL DEFAULT '#808080',
+    created_at TIMESTAMP DEFAULT NOW(),
+
+    UNIQUE(user_id, name)
 );

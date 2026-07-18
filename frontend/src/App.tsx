@@ -1,20 +1,33 @@
 import { useState, useEffect } from "react";
 import "./index.css";
-import "./App.css";
 import { useToast } from "./context/ToastContext";
-import { api } from "./api/client";
 
 import AddScreen from "./components/AddScreen";
 import SavedScreen from "./components/SavedScreen";
 import PublicScreen from "./components/PublicScreen";
 import HomeScreen from "./components/HomeScreen";
+
 import LoginModal from "./modals/loginmodal";
-import { NavBar } from "./modals/navbar";
+import { TopBar } from "./components/TopBar";
 
 import { useAuth } from "./auth/useAuth";
-import type { Prayer } from "./types";
+import type { Prayer, Category } from "./types";
 import ProfileModal from "./profile/ProfileModal";
 import SharedScreen from "./components/SharedScreen";
+import {
+  deleteCategory,
+  getCategories,
+  updateCategory,
+} from "./api/categories";
+
+import {
+  createPrayer,
+  fetchSavedPrayers,
+  fetchSharedPrayers,
+  fetchPublicPrayers,
+  removePrayer,
+  editPrayer,
+} from "./api/prayers";
 
 type Screen = "add" | "saved" | "shared" | "public" | "home";
 
@@ -24,54 +37,70 @@ function App() {
   const [screen, setScreen] = useState<Screen>("home");
   const [prayerText, setPrayerText] = useState("");
   const [publicPrayer, setPublicPrayer] = useState(false);
-  const [prayers, setPrayers] = useState<Prayer[]>([]);
-  const [showLogin, setShowLogin] = useState(false);
-  const [showProfile, setShowProfile] = useState(false);
-  const [modal, setModal] = useState<"login" | "settings" | "profile" | null>(
+  const [selectedCategory, setSelectedCategory] = useState<Category | null>(
     null,
   );
+
+  const [showLogin, setShowLogin] = useState(false);
+  const [showProfile, setShowProfile] = useState(false);
 
   const [savedPrayers, setSavedPrayers] = useState<Prayer[]>([]);
   const [sharedPrayers, setSharedPrayers] = useState<Prayer[]>([]);
   const [publicPrayers, setPublicPrayers] = useState<Prayer[]>([]);
 
-  async function savePrayer() {
-    await api("/api/prayers", {
-      method: "POST",
-      body: JSON.stringify({
-        content: prayerText,
-        is_public: publicPrayer,
-      }),
-    });
+  const [categories, setCategories] = useState<Category[]>([]);
 
-    await getPrayers();
+  const loaders: Record<Screen, () => Promise<void>> = {
+    saved: getSavedPrayers,
+    shared: getSharedPrayers,
+    public: getPublicPrayers,
+  };
+
+  useEffect(() => {
+    async function loadCategories() {
+      const data = await getCategories();
+      setCategories(data);
+    }
+
+    if (user) {
+      loadCategories();
+    }
+  }, [user]);
+
+  async function savePrayer() {
+    await createPrayer(prayerText, publicPrayer, selectedCategory?.id ?? null);
+
+    await getSavedPrayers();
+
     setPrayerText("");
     setPublicPrayer(false);
+    setSelectedCategory(null);
+
     showToast("Card saved");
   }
 
-  async function getPrayers() {
-    const data = await api("/api/prayers");
+  async function getSavedPrayers() {
+    const data = await fetchSavedPrayers();
     setSavedPrayers(data);
   }
 
   async function getSharedPrayers() {
-    const data = await api("/api/prayers/shared");
+    const data = await fetchSharedPrayers();
     setSharedPrayers(data);
   }
 
   async function getPublicPrayers() {
-    const data = await api("/api/prayers/public");
+    const data = await fetchPublicPrayers();
     setPublicPrayers(data);
   }
 
   async function deletePrayer(id: number) {
     try {
-      await api(`/api/prayers/${id}`, {
-        method: "DELETE",
-      });
+      await removePrayer(id);
 
-      await getPrayers();
+      await getSavedPrayers();
+
+      showToast("Prayer deleted");
     } catch (err) {
       console.error(err);
     }
@@ -79,45 +108,52 @@ function App() {
 
   async function changePrayer(id: number, content: string, is_public: boolean) {
     try {
-      await api(`/api/prayers/${id}`, {
-        method: "PATCH",
-        body: JSON.stringify({
-          content,
-          is_public,
-        }),
-      });
+      await editPrayer(id, content, is_public);
 
-      await getPrayers();
+      await getSavedPrayers();
+
+      showToast("Prayer updated");
     } catch (err) {
       console.error(err);
     }
   }
 
-  useEffect(() => {
-    if (screen === "saved") {
-      getPrayers();
-    }
+  async function loadScreen(screen: Screen) {
+    await loaders[screen]();
+    setScreen(screen);
+  }
 
-    if (screen === "shared") {
-      getSharedPrayers();
-    }
+  async function handleCategoryCreated(category: Category) {
+    setCategories((prev) => [...prev, category]);
+    setSelectedCategory(category);
+  }
 
-    if (screen === "public") {
-      getPublicPrayers();
+  async function handleCategoryUpdated(category: Category) {
+    const updated = await updateCategory(
+      category.id,
+      category.name,
+      category.color,
+    );
+
+    setCategories((prev) =>
+      prev.map((item) => (item.id === updated.id ? updated : item)),
+    );
+  }
+
+  async function handleCategoryDeleted(id: number) {
+    await deleteCategory(id);
+
+    setCategories((prev) => prev.filter((category) => category.id !== id));
+
+    if (selectedCategory?.id === id) {
+      setSelectedCategory(null);
     }
-  }, [screen, user]);
+  }
 
   return (
     <div className="app">
-      {modal === "login" && <LoginModal close={() => setModal(null)} />}
-      {modal === "settings" && <LoginModal close={() => setModal(null)} />}
-      {modal === "profile" && <LoginModal close={() => setModal(null)} />}
-
-      {showLogin && <LoginModal close={() => setShowLogin(false)} />}
-      {showProfile && <ProfileModal close={() => setShowProfile(false)} />}
-
       {
-        <NavBar
+        <TopBar
           goToHome={() => setScreen(`home`)}
           goToAdd={!user ? () => setShowLogin(true) : () => setScreen(`add`)}
           goToAccount={
@@ -126,22 +162,41 @@ function App() {
         />
       }
 
+      {showLogin && <LoginModal close={() => setShowLogin(false)} />}
+      {showProfile && <ProfileModal close={() => setShowProfile(false)} />}
+
+      {/* {
+        <NavBar
+          goToHome={() => setScreen(`home`)}
+          goToAdd={!user ? () => setShowLogin(true) : () => setScreen(`add`)}
+          goToAccount={
+            !user ? () => setShowLogin(true) : () => setShowProfile(true)
+          }
+        />
+      } */}
+
       {screen === `add` ? (
         <AddScreen
           prayerText={prayerText}
           setPrayerText={setPrayerText}
           publicPrayer={publicPrayer}
           setPublicPrayer={setPublicPrayer}
+          categories={categories}
+          onCategoryCreated={handleCategoryCreated}
+          onCategoryUpdated={handleCategoryUpdated}
+          onCategoryDeleted={handleCategoryDeleted}
+          selectedCategory={selectedCategory}
+          setSelectedCategory={setSelectedCategory}
           savePrayer={savePrayer}
         />
       ) : screen === `home` ? (
         <HomeScreen
-          goToPublic={() => setScreen(`public`)}
+          goToPublic={() => loadScreen(`public`)}
           goToShared={
-            !user ? () => setShowLogin(true) : () => setScreen(`shared`)
+            !user ? () => setShowLogin(true) : () => loadScreen(`shared`)
           }
           goToSaved={
-            !user ? () => setShowLogin(true) : () => setScreen(`saved`)
+            !user ? () => setShowLogin(true) : () => loadScreen(`saved`)
           }
         />
       ) : screen === `saved` ? (

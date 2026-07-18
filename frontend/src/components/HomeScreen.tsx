@@ -15,10 +15,6 @@ export default function HomeScreen({
     <>
       <div className="background-glow" />
 
-      <header>
-        <h1></h1>
-      </header>
-
       <main>
         <button onClick={goToPublic} className="card sage">
           <h2>Public</h2>
@@ -33,7 +29,7 @@ export default function HomeScreen({
         </button>
       </main>
 
-      {}
+      <section></section>
     </>
   );
 }
