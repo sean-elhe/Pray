@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { api } from "../api/client.ts";
 import type { Prayer } from "../types";
 import type { User } from "../auth/AuthContext";
-import "./ShareModal.css";
+import "./loginmodal.css";
 
 interface ShareModalProps {
   isOpen: boolean;
@@ -133,7 +133,7 @@ export default function ShareModal({
   if (!isOpen) return null;
 
   return (
-    <div className="share-overlay" onClick={onClose}>
+    <div className="modal-overlay" onClick={onClose}>
       <div className="share-modal" onClick={(e) => e.stopPropagation()}>
         <h2>Share Prayer</h2>
 

@@ -72,13 +72,17 @@ function AddScreen({
         >
           {selectedCategory?.name ?? "No Category"}
         </div>
+
+        <button className="save-btn" onClick={savePrayer}>
+          Save Prayer
+        </button>
       </section>
 
       {showCategoryModal && (
         <CategoryModal
           close={() => setShowCategoryModal(false)}
           categories={categories}
-          selectedCategory={selectedCategory}
+          selectedCategoryId={() => {}}
           onSelect={(category) => {
             setSelectedCategory(category);
             setShowCategoryModal(false);

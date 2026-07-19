@@ -3,7 +3,7 @@ export type Prayer = {
   content: string;
   is_answered: boolean;
   created_at: string;
-  user_name: string;
+  name: string;
   is_public: boolean;
 
   category_id: number | null;

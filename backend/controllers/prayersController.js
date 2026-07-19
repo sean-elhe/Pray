@@ -21,7 +21,7 @@ export const createPrayer = async (req, res) => {
        is_public,
        category_id
       )
-      VALUES ($1, $2, $3)
+      VALUES ($1, $2, $3, $4)
       RETURNING id;
       `,
       [content, user_id, is_public, category_id],
@@ -184,7 +184,7 @@ export const updatePrayer = async (req, res) => {
     const userId = req.user.id;
 
     const { id } = req.params;
-    const { content, is_answered, is_public } = req.body;
+    const { content, is_answered, is_public, category_id } = req.body;
 
     const result = await pool.query(
       `
@@ -192,20 +192,75 @@ export const updatePrayer = async (req, res) => {
       SET
         content = COALESCE($1, content),
         is_answered = COALESCE($2, is_answered),
-        is_public = COALESCE ($3, is_public)
-      WHERE id = $4 AND user_id = $5
-      RETURNING *;
+        is_public = COALESCE ($3, is_public),
+        category_id = COALESCE ($4, category_id)
+      WHERE id = $5 AND user_id = $6
+      RETURNING id;
       `,
-      [content, is_answered, is_public, id, userId],
+      [content, is_answered, is_public, category_id, id, userId],
     );
 
     if (result.rows.length === 0) {
       return res.status(404).json({ error: "Prayer not found" });
     }
 
-    res.json(result.rows[0]);
+    const updatedPrayer = await pool.query(
+      `
+      SELECT
+        prayers.id,
+        prayers.content,
+        prayers.is_answered,
+        prayers.created_at,
+        prayers.is_public,
+        prayers.category_id,
+        categories.name AS category_name,
+        categories.color AS category_color,
+        users.name AS user_name
+      FROM prayers
+      JOIN users
+        ON prayers.user_id = users.id
+      LEFT JOIN categories
+        ON prayers.category_id = categories.id
+      WHERE prayers.id = $1
+      `,
+      [id],
+    );
+
+    res.json(updatedPrayer.rows[0]);
   } catch (err) {
     console.error("PATCH /prayers error:", err);
     res.status(500).json({ error: "Database error" });
+  }
+};
+
+export const updatePrayerCategory = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { id } = req.params;
+    const { category_id } = req.body;
+
+    const result = pool.query(
+      `
+      UPDATE prayers
+      SET category_od = $1
+      WHERE id = $2
+        AND user_id = $3
+      returning *;
+      `,
+      [category_id, id, userId],
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({
+        error: "Prayer not found",
+      });
+    }
+
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error("PATH /prayers/:id/category error:", err);
+    res.status(500).json({
+      error: "Database error",
+    });
   }
 };

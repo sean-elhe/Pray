@@ -36,14 +36,16 @@ export async function removePrayer(id: number) {
 
 export async function editPrayer(
   id: number,
-  content: string,
-  is_public: boolean,
+  content?: string,
+  is_public?: boolean,
+  category_id?: number | null,
 ) {
   return api(`/api/prayers/${id}`, {
     method: "PATCH",
     body: JSON.stringify({
       content,
       is_public,
+      category_id,
     }),
   });
 }

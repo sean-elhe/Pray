@@ -6,8 +6,8 @@ import "./loginmodal.css";
 type CategoryModalProps = {
   close: () => void;
   categories: Category[];
-  selectedCategory: Category | null;
-  onSelect: (category: Category | null) => void;
+  selectedCategoryId: number | null;
+  onSelect: (category: number | null) => void;
   onCreated: (category: Category) => void;
   onUpdated: (category: Category) => Promise<void>;
   onDeleted: (id: number) => Promise<void>;
@@ -16,7 +16,7 @@ type CategoryModalProps = {
 export default function CategoryModal({
   close,
   categories,
-  selectedCategory,
+  selectedCategoryId,
   onSelect,
   onCreated,
   onUpdated,
@@ -75,12 +75,12 @@ export default function CategoryModal({
               <div key={category.id} className="category-row">
                 <button
                   className={
-                    selectedCategory?.id === category.id
+                    selectedCategoryId === category.id
                       ? "category-button selected"
                       : "category-button"
                   }
                   onClick={() => {
-                    onSelect(category);
+                    onSelect(category.id);
                     close();
                   }}
                 >

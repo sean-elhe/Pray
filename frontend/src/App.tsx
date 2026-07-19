@@ -106,9 +106,14 @@ function App() {
     }
   }
 
-  async function changePrayer(id: number, content: string, is_public: boolean) {
+  async function changePrayer(
+    id: number,
+    content: string,
+    is_public: boolean,
+    category_id: number,
+  ) {
     try {
-      await editPrayer(id, content, is_public);
+      await editPrayer(id, content, is_public, category_id);
 
       await getSavedPrayers();
 
@@ -138,6 +143,22 @@ function App() {
     setCategories((prev) =>
       prev.map((item) => (item.id === updated.id ? updated : item)),
     );
+  }
+
+  async function handleCategoryChanged(
+    prayerId: number,
+    categoryId: number | null,
+  ) {
+    try {
+      await editPrayer(prayerId, undefined, undefined, categoryId);
+
+      await getSavedPrayers();
+
+      showToast("Category updated");
+    } catch (err) {
+      console.error(err);
+      showToast("Failed to update category");
+    }
   }
 
   async function handleCategoryDeleted(id: number) {
@@ -206,6 +227,11 @@ function App() {
           changePrayer={changePrayer}
           publicPrayer={publicPrayer}
           setPublicPrayer={setPublicPrayer}
+          categories={categories}
+          onCategoryChanged={handleCategoryChanged}
+          onCategoryCreated={handleCategoryCreated}
+          onCategoryUpdated={handleCategoryUpdated}
+          onCategoryDeleted={handleCategoryDeleted}
         />
       ) : screen === `shared` ? (
         <SharedScreen prayers={sharedPrayers} />

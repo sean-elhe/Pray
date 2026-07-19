@@ -33,3 +33,15 @@ export async function deleteCategory(id: number) {
     method: "DELETE",
   });
 }
+
+export async function changePrayerCategory(
+  prayerId: number,
+  categoryId: number | null,
+) {
+  return api(`/api/prayers/${prayerId}/category`, {
+    method: "PATCH",
+    body: JSON.stringify({
+      category_id: categoryId,
+    }),
+  });
+}

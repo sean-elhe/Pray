@@ -54,10 +54,6 @@
   display: none;
 }
 
-.prayer-date {
-  margin-top: 8px;
-}
-
 .saved-card:active {
   cursor: grabbing;
 }
@@ -105,4 +101,23 @@
   background-color: #00a36c;
   color: white;
   width: 75%;
+}
+
+.footer {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.footer small {
+  padding-top: 24px;
+  font-size: 12px;
+}
+
+.footer button {
+  border-radius: 8px;
+  border: 1px solid rgba(44, 39, 39, 0.75);
+  padding: 8px 12px 8px 12px;
+  font-size: 16px;
 }

@@ -9,6 +9,7 @@ type PrayerCardProps = {
   onNext: () => void;
   onPrevious: () => void;
   onDoubleTap: () => void;
+  onCategoryClick: () => void;
   direction: number;
   editing: boolean;
   publicPrayer: boolean;
@@ -23,6 +24,7 @@ export default function PrayerCard({
   onNext,
   onPrevious,
   onDoubleTap,
+  onCategoryClick,
   direction,
   editing,
   publicPrayer,
@@ -93,7 +95,9 @@ export default function PrayerCard({
       <motion.div
         className="prayer-card"
         style={{
-          borderColor: prayer.category_color ?? "#ddd",
+          border: prayer.category_color
+            ? `6px solid ${prayer.category_color}`
+            : undefined,
         }}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
@@ -136,11 +140,23 @@ export default function PrayerCard({
           <p className="prayer-body">{prayer.content}</p>
         )}
 
-        <small className="prayer-name">
-          {isSavedScreen ? formattedDate : `By ${prayer.user_name}`}
-        </small>
+        <div className="footer">
+          <small className="prayer-name">
+            {isSavedScreen ? formattedDate : `By ${prayer.name}`}
+          </small>
 
-        {prayer.category_name && <span>{prayer.category_name}</span>}
+          {prayer.category_name && (
+            <button
+              className="category-label"
+              onClick={onCategoryClick}
+              style={{
+                backgroundColor: prayer.category_color ?? undefined,
+              }}
+            >
+              {prayer.category_name}
+            </button>
+          )}
+        </div>
 
         {prayer.is_answered && <p className="answered">✅ Answered</p>}
       </motion.div>

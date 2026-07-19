@@ -1,5 +1,6 @@
 section {
   display: flex;
+  flex-direction: column;
   width: 100%;
   padding: 24px;
   justify-content: center;
@@ -13,4 +14,5 @@ section {
   padding: 12px;
   width: 85%;
   color: white;
+  margin-top: 12px;
 }
