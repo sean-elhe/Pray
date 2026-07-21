@@ -26,7 +26,7 @@ export default function ProfileModal({ close }: ProfileModalProps) {
         <button className="close-btn" onClick={close}>
           X
         </button>
-        <h3 className="header">Hi, {user.name}!</h3>
+        <h3 className="header">Hi, {user?.name}!</h3>
         <hr />
 
         <NotificationDropdown />

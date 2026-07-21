@@ -42,6 +42,7 @@ export default function PublicScreen({ prayers }: PublicScreenProps) {
           onCancelEdit={() => {}}
           onSaveEdit={() => {}}
           onDoubleTap={() => {}}
+          onCategoryClick={() => {}}
         />
       </main>
 

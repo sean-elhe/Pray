@@ -42,6 +42,7 @@ export default function SharedScreen({ prayers }: SharedScreenProps) {
           onCancelEdit={() => {}}
           onSaveEdit={() => {}}
           onDoubleTap={() => {}}
+          onCategoryClick={() => {}}
         />
       </main>
 
