@@ -7,7 +7,7 @@ import SavedScreen from "./components/SavedScreen";
 import PublicScreen from "./components/PublicScreen";
 import HomeScreen from "./components/HomeScreen";
 
-import LoginModal from "./modals/loginmodal";
+import LoginModal from "./modals/LogInModal";
 import { TopBar } from "./components/TopBar";
 
 import { useAuth } from "./auth/useAuth";

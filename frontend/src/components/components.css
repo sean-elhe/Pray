@@ -1,18 +1,40 @@
 section {
-  display: flex;
-  flex-direction: column;
   width: 100%;
-  padding: 24px;
-  justify-content: center;
-  align-items: center;
-  height: 200px;
+  height: 140px;
+  overflow: scroll;
+  padding: 12px 12px;
 }
-.save-btn {
+
+.collapsible-section {
+  width: 100%;
+  overflow: scroll;
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.05),
+    0 12px 30px rgba(0, 0, 0, 0.08);
+  background: linear-gradient(to bottom, #fafafa, #f2f2f2);
+  border: 1px solid rgba(44, 39, 39, 0.75);
+  border-radius: 16px;
+  padding: 12px 12px;
+}
+
+.collapsible-content button {
   position: relative;
-  background-color: green;
+  background-color: #adc178;
   border-radius: 18px;
   padding: 12px;
   width: 85%;
-  color: white;
   margin-top: 12px;
+  align-items: center;
+  color: white;
+}
+
+.save-btn {
+  background-color: green !important;
+}
+
+.collapsible-header {
+  text-align: center;
+  font-size: 21px;
+  font-weight: lighter;
+  align-items: center;
 }

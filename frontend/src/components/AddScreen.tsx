@@ -3,6 +3,7 @@ import { useState } from "react";
 import CategoryModal from "../modals/CategoryModal";
 import "./components.css";
 import type { Category } from "../types";
+import CollapsibleSection from "../profile/CollapsibleSection";
 
 type AddScreenProps = {
   prayerText: string;
@@ -35,10 +36,6 @@ function AddScreen({
   setSelectedCategory,
   savePrayer,
 }: AddScreenProps) {
-  const handleClear = () => {
-    setPrayerText("");
-  };
-
   const handlePublic = () => {
     setPublicPrayer((prev) => !prev);
   };
@@ -61,21 +58,29 @@ function AddScreen({
       </main>
 
       <section>
-        <div
-          className="category-picker"
-          style={{
-            borderLeft: selectedCategory
-              ? `6px solid ${selectedCategory.color}`
-              : "6px solid transparent",
-          }}
-          onClick={() => setShowCategoryModal(true)}
-        >
-          {selectedCategory?.name ?? "No Category"}
-        </div>
+        <CollapsibleSection title="Save">
+          <button
+            className="category-picker"
+            style={{
+              borderLeft: selectedCategory
+                ? `6px solid ${selectedCategory.color}`
+                : "6px solid transparent",
+            }}
+            onClick={() => setShowCategoryModal(true)}
+          >
+            {selectedCategory?.name ?? "No Category"}
+          </button>
 
-        <button className="save-btn" onClick={savePrayer}>
-          Save Prayer
-        </button>
+          <div className="visiblity">
+            <button className="visiblity-picker" onClick={handlePublic}>
+              {publicPrayer === false ? "Make public" : "Make private"}
+            </button>
+          </div>
+
+          <button className="save-btn" onClick={savePrayer}>
+            Save Prayer
+          </button>
+        </CollapsibleSection>
       </section>
 
       {showCategoryModal && (
