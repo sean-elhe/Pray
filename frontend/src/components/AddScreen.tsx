@@ -87,9 +87,13 @@ function AddScreen({
         <CategoryModal
           close={() => setShowCategoryModal(false)}
           categories={categories}
-          selectedCategoryId={() => {}}
-          onSelect={(category) => {
-            setSelectedCategory(category);
+          selectedCategoryId={selectedCategory?.id ?? null}
+          onSelect={(categoryId) => {
+            const category = categories.find(
+              (category) => category.id === categoryId,
+            );
+
+            setSelectedCategory(category ?? null);
             setShowCategoryModal(false);
           }}
           onCreated={onCategoryCreated}

@@ -54,6 +54,8 @@ function App() {
     saved: getSavedPrayers,
     shared: getSharedPrayers,
     public: getPublicPrayers,
+    home: getSavedPrayers,
+    add: getSavedPrayers,
   };
 
   useEffect(() => {
@@ -110,7 +112,7 @@ function App() {
     id: number,
     content: string,
     is_public: boolean,
-    category_id: number,
+    category_id: number | null,
   ) {
     try {
       await editPrayer(id, content, is_public, category_id);
@@ -185,16 +187,6 @@ function App() {
 
       {showLogin && <LoginModal close={() => setShowLogin(false)} />}
       {showProfile && <ProfileModal close={() => setShowProfile(false)} />}
-
-      {/* {
-        <NavBar
-          goToHome={() => setScreen(`home`)}
-          goToAdd={!user ? () => setShowLogin(true) : () => setScreen(`add`)}
-          goToAccount={
-            !user ? () => setShowLogin(true) : () => setShowProfile(true)
-          }
-        />
-      } */}
 
       {screen === `add` ? (
         <AddScreen
